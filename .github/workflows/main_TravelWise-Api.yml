@@ -31,7 +31,7 @@ jobs:
       with:
         push: true
         tags: travelwise.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_d67bb3681f7e4344bb1056831cbdab39 }}/travelwise.api:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./Api/TravelWise.Api/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
