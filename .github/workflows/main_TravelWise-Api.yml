@@ -5,6 +5,10 @@ name: Build and deploy container app to Azure Web App - TravelWise-Api
 
 on:
   push:
+      
+    paths:
+      - Api/**
+      - .github/workflows/main_TravelWise-Api.yml
     branches:
       - main
   workflow_dispatch:
