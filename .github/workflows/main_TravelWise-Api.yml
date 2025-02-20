@@ -32,7 +32,7 @@ jobs:
         context: ./Api
         push: true
         tags: travelwise.azurecr.io/travelwise.api:${{ github.sha }}
-        file: ./TravelWise.Api/Dockerfile
+        file: ./Api/TravelWise.Api/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
