@@ -30,8 +30,8 @@ jobs:
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: travelwise.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_f7c5664b99284ac9b8378e18ae2dccaf }}/travelwise.gui:${{ github.sha }}
-        file: ./Dockerfile
+        tags: travelwise.azurecr.io/travelwise.gui:${{ github.sha }}
+        file: ./Gui/Dockerfile
 
   deploy:
     runs-on: ubuntu-latest
@@ -48,4 +48,4 @@ jobs:
         app-name: 'TravelWise'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_a50e4033f0f0458688ed93d4449a75f7 }}
-        images: 'travelwise.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_f7c5664b99284ac9b8378e18ae2dccaf }}/travelwise.gui:${{ github.sha }}'
+        images: 'travelwise.azurecr.io/travelwise.gui:${{ github.sha }}'
