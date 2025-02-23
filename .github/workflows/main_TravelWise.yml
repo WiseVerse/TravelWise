@@ -29,6 +29,7 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
+        context: ./Gui
         push: true
         tags: travelwise.azurecr.io/travelwise.gui:${{ github.sha }}
         file: ./Gui/Dockerfile
