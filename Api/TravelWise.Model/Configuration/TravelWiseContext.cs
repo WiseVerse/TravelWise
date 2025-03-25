@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 public class TravelWiseContext : DbContext
 {
     public TravelWiseContext(DbContextOptions<TravelWiseContext> options) : base(options) { }
-    
+    //ka
     public TravelWiseContext() {}
 
     public DbSet<User> Users { get; set; }
