@@ -3,22 +3,22 @@
 import {z} from "zod";
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
-import React from "react";
 import {Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-
-const coordinateRegex = /^(\d{1,2}\.\d{5,})°[NS] (\d{1,3}\.\d{5,})°[EW]$/;
+import {Route} from "lucide-react";
 
 const formSchema = z.object({
-    coordinates: z.string().regex(coordinateRegex, "Ungültiges Koordinatenformat. Mindestens 5 Dezimalstellen. Beispiel: 48.40999°N 15.60384°E"),
+    start: z.string().min(2).max(250),
+    end: z.string().min(2).max(250),
 })
 
-export default function SearchCoordinates() {
+export default function SearchRoute() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            coordinates: "",
+            start: "",
+            end: "",
         },
     })
 
@@ -33,21 +33,40 @@ export default function SearchCoordinates() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
-                    name="coordinates"
+                    name="start"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Koordinaten</FormLabel>
+                            <FormLabel>Start</FormLabel>
                             <FormControl>
-                                <Input placeholder="48.40999°N 15.60384°E" {...field} />
+                                <Input placeholder="Musterstraße 1" {...field} />
                             </FormControl>
                             <FormDescription className="sr-only">
-                                Coordinates
+                                Start Address
                             </FormDescription>
                             <FormMessage/>
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                <FormField
+                    control={form.control}
+                    name="end"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Ziel</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Musterstraße 1" {...field} />
+                            </FormControl>
+                            <FormDescription className="sr-only">
+                                Ziel Address
+                            </FormDescription>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+                <Button type="submit">
+                    <Route />
+                    Berechnen
+                </Button>
             </form>
         </Form>
     )

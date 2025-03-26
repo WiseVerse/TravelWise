@@ -4,22 +4,27 @@ import {
     SidebarFooter,
     SidebarHeader, SidebarMenu, SidebarMenuItem,
     SidebarRail,
-    SidebarMenuButton, SidebarGroup, SidebarGroupContent
+    SidebarMenuButton, SidebarGroup, SidebarGroupContent, SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import React from "react";
-import {Route, SearchIcon} from "lucide-react";
+import {Home, Route, SearchIcon, Settings} from "lucide-react";
 import AppSidebarUser from "@/components/app-sidebar-user";
 
 const NavItems = [
     {
+        icon: <Home/>,
+        name: "Home",
+        url: "/app"
+    },
+    {
         icon: <SearchIcon/>,
         name: "Suche",
-        url: ""
+        url: "/app/search"
     },
     {
         icon: <Route/>,
-        name: "Route berechnen",
-        url: "app/route"
+        name: "Route",
+        url: "/app/route"
     },
 ]
 
@@ -31,6 +36,7 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
+                    <SidebarGroupLabel>Navigation</SidebarGroupLabel>
                     <SidebarGroupContent>
                         {NavItems.map((item) => (
                             <SidebarMenu key={item.name}>
@@ -48,14 +54,14 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                {/*<SidebarMenu>*/}
-                {/*    <SidebarMenuItem>*/}
-                {/*        <SidebarMenuButton>*/}
-                {/*            <Settings />*/}
-                {/*            Settings*/}
-                {/*        </SidebarMenuButton>*/}
-                {/*    </SidebarMenuItem>*/}
-                {/*</SidebarMenu>*/}
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton>
+                            <Settings />
+                            Settings
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
             <SidebarRail/>
         </Sidebar>
