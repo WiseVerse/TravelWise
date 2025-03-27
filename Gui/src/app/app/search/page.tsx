@@ -5,12 +5,13 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import SiteHeader from "@/components/site-header";
+import {Skeleton} from "@/components/ui/skeleton";
 
 export default function SearchPage() {
     return (
         <>
             <SiteHeader title="Suche"/>
-            <div className="card-container">
+            <main className="card-container">
                 <Tabs defaultValue="addresses">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="addresses">Adresse</TabsTrigger>
@@ -39,6 +40,9 @@ export default function SearchPage() {
                         </Card>
                     </TabsContent>
                 </Tabs>
+                
+                <Skeleton className="row-span-2"/>
+                
                 <Card className="flex flex-col h-full max-h-screen">
                     <CardHeader>
                         <CardTitle>Info</CardTitle>
@@ -49,13 +53,11 @@ export default function SearchPage() {
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie libero lacus, at feugiat
                             diam porta pulvinar. Vestibulum mollis, orci eu convallis lobortis, justo magna tempus purus, in
                             euismod turpis diam eu odio. Morbi sit amet pellentesque lectus. Praesent euismod odio ut diam
-                            ullamcorper, non commodo orci varius. Phasellus volutpat lacinia tortor vitae ullamcorper. Morbi
-                            consequat augue tincidunt, lacinia arcu eu, consectetur ipsum. Nam maximus leo sed magna posuere
-                            rhoncus. Pellentesque dignissim tellus vestibulum elit luctus tincidunt.
+                            ullamcorper, non commodo orci varius.
                         </ScrollArea>
                     </CardContent>
                 </Card>
-            </div>
+            </main>
         </>
     );
 }

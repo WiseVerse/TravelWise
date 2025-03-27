@@ -3,6 +3,7 @@ import SearchRoute from "@/components/search/route";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import React from "react";
 import SiteHeader from "@/components/site-header";
+import {Skeleton} from "@/components/ui/skeleton";
 
 export default function Page() {
     return (
@@ -18,6 +19,9 @@ export default function Page() {
                         <SearchRoute/>
                     </CardContent>
                 </Card>
+
+                <Skeleton className="row-span-2"/>
+                
                 <Card className="flex flex-col h-full max-h-screen">
                     <CardHeader>
                         <CardTitle>Info</CardTitle>
