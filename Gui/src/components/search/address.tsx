@@ -38,7 +38,7 @@ export default function SearchAddress() {
                         <FormItem>
                             <FormLabel>Adresse</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input placeholder="Musterstraße 1" autoComplete="off" {...field} />
                             </FormControl>
                             <FormDescription className="sr-only">
                                 Address

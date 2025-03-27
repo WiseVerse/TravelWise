@@ -41,7 +41,7 @@ export default function SearchCoordinates() {
                         <FormItem>
                             <FormLabel>Koordinaten</FormLabel>
                             <FormControl>
-                                <Input placeholder="48.40999°N 15.60384°E" {...field} />
+                                <Input placeholder="48.40999°N 15.60384°E" autoComplete="off" {...field} />
                             </FormControl>
                             <FormDescription className="sr-only">
                                 Coordinates

@@ -42,7 +42,7 @@ export default function SearchRoute() {
                         <FormItem>
                             <FormLabel>Start</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input placeholder="Musterstraße 1" {...field} autoComplete="off"/>
                             </FormControl>
                             <FormDescription className="sr-only">
                                 Start Address
@@ -58,7 +58,7 @@ export default function SearchRoute() {
                         <FormItem>
                             <FormLabel>Ziel</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input placeholder="Musterstraße 1" {...field} autoComplete="off"/>
                             </FormControl>
                             <FormDescription className="sr-only">
                                 Ziel Address
