@@ -3,12 +3,12 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader, SidebarMenu, SidebarMenuItem,
-    SidebarRail,
     SidebarMenuButton, SidebarGroup, SidebarGroupContent, SidebarGroupLabel
 } from "@/components/ui/sidebar";
 import React from "react";
 import {Home, Route, SearchIcon, Settings} from "lucide-react";
 import AppSidebarUser from "@/components/app-sidebar-user";
+import Link from "next/link";
 
 const NavItems = [
     {
@@ -30,7 +30,7 @@ const NavItems = [
 
 export default function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
     return (
-        <Sidebar collapsible="icon" {...props}>
+        <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
                 <AppSidebarUser/>
             </SidebarHeader>
@@ -56,14 +56,15 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton>
-                            <Settings />
-                            Settings
+                        <SidebarMenuButton asChild>
+                            <Link href="/app/settings">
+                                <Settings />
+                                Einstellungen
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
-            <SidebarRail/>
         </Sidebar>
     )
 }

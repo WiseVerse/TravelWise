@@ -11,6 +11,7 @@ import {
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {ChevronsUpDown, LogOut} from "lucide-react";
 import {useIsMobile} from "@/hooks/use-mobile";
+import Link from "next/link";
 
 export default function AppSidebarUser() {
     const isMobile = useIsMobile()
@@ -56,9 +57,11 @@ export default function AppSidebarUser() {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator/>
-                        <DropdownMenuItem>
-                            <LogOut />
-                            Log out
+                        <DropdownMenuItem asChild>
+                            <Link href="/auth/login">
+                                <LogOut />
+                                Log out
+                            </Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

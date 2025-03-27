@@ -1,7 +1,13 @@
+import SiteHeader from "@/components/site-header";
+
 export default function Home() {
     return (
-        <div className="h-screen flex justify-center items-center">
-            <div className="text-4xl font-bold">Home</div>
-        </div>
+        <>
+            <SiteHeader title="Home"/>
+            <div className="h-full flex justify-center items-center">
+                <div className="text-4xl font-bold">Home</div>
+            </div>
+        </>
+        
     )
 }

@@ -12,7 +12,9 @@ import {Search} from "lucide-react";
 const coordinateRegex = /^(\d{1,2}\.\d{5,})°[NS] (\d{1,3}\.\d{5,})°[EW]$/;
 
 const formSchema = z.object({
-    coordinates: z.string().regex(coordinateRegex, "Ungültiges Koordinatenformat. Mindestens 5 Dezimalstellen. Beispiel: 48.40999°N 15.60384°E"),
+    coordinates: z.string()
+        .regex(coordinateRegex, "Ungültiges Koordinatenformat. Mindestens 5 Dezimalstellen. Beispiel: 48.40999°N 15.60384°E")
+        .trim(),
 })
 
 export default function SearchCoordinates() {
@@ -49,7 +51,7 @@ export default function SearchCoordinates() {
                     )}
                 />
                 <Button type="submit">
-                    <Search />
+                    <Search/>
                     Suchen
                 </Button>
             </form>

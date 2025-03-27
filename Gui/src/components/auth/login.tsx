@@ -1,28 +1,25 @@
 "use client"
 
+import React from "react";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod"
-import {useForm} from "react-hook-form"
-import {Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage} from "@/components/ui/form";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {Route} from "lucide-react";
+
 
 const formSchema = z.object({
-    start: z.string()
-        .min(1, "Start Adresse muss vorhanden sein")
-        .trim(),
-    end: z.string()
-        .min(1, "Ziel Adresse muss vorhanden sein")
-        .trim(),
-})
+    email: z.string().email().trim(),
+    password: z.string().min(1, "Passwort muss vorhanden sein").trim(),
+});
 
-export default function SearchRoute() {
+export default function LoginForm() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            start: "",
-            end: "",
+            email: "",
+            password: "",
         },
     })
 
@@ -37,15 +34,15 @@ export default function SearchRoute() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                     control={form.control}
-                    name="start"
+                    name="email"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Start</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input type="email" placeholder="account@mail.com" {...field} />
                             </FormControl>
                             <FormDescription className="sr-only">
-                                Start Address
+                                Email
                             </FormDescription>
                             <FormMessage/>
                         </FormItem>
@@ -53,23 +50,22 @@ export default function SearchRoute() {
                 />
                 <FormField
                     control={form.control}
-                    name="end"
+                    name="password"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Ziel</FormLabel>
+                            <FormLabel>Passwort</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input type="password" {...field} />
                             </FormControl>
                             <FormDescription className="sr-only">
-                                Ziel Address
+                                Password
                             </FormDescription>
                             <FormMessage/>
                         </FormItem>
                     )}
                 />
-                <Button type="submit">
-                    <Route />
-                    Berechnen
+                <Button type="submit" className="w-full">
+                    Login
                 </Button>
             </form>
         </Form>

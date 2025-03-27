@@ -9,7 +9,9 @@ import {Button} from "@/components/ui/button";
 import {Search} from "lucide-react";
 
 const formSchema = z.object({
-    search: z.string().min(2).max(250),
+    search: z.string()
+        .min(1, "Adresse muss vorhanden sein")
+        .trim(),
 })
 
 export default function SearchAddress() {
@@ -34,7 +36,7 @@ export default function SearchAddress() {
                     name="search"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Search</FormLabel>
+                            <FormLabel>Adresse</FormLabel>
                             <FormControl>
                                 <Input placeholder="Musterstraße 1" {...field} />
                             </FormControl>
