@@ -8,7 +8,7 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 export default function Home() {
     return (
         <div className="card-container">
-            <Tabs defaultValue="addresses" className="animate-spin">
+            <Tabs defaultValue="addresses">
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="addresses">Adresse</TabsTrigger>
                     <TabsTrigger value="coordinates">Koordinaten</TabsTrigger>
@@ -36,7 +36,7 @@ export default function Home() {
                     </Card>
                 </TabsContent>
             </Tabs>
-            <Card className="flex flex-col h-full max-h-screen animate-spin">
+            <Card className="flex flex-col h-full max-h-screen">
                 <CardHeader>
                     <CardTitle>Info</CardTitle>
                     <CardDescription>Info zum Ort Musterstraße 1</CardDescription>
