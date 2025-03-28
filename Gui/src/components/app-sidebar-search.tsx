@@ -1,6 +1,6 @@
 "use client"
 
-import {chat} from "@/components/app-sidebar"
+import {chat} from "@/lib/types";
 import {SearchIcon} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import React from "react";

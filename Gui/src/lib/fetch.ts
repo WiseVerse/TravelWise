@@ -30,7 +30,7 @@ export const fetchChat = async (id: string): Promise<chat> => {
     return await data.json();
 }
 
-export const postMessage = async (message: message) => {
+export const postMessage = async (message: message): Promise<message> => {
     try {
         const response = await fetch(`https://localhost:7111/messages`, {
             method: 'POST',
@@ -54,3 +54,21 @@ export const postMessage = async (message: message) => {
         throw error;
     }
 };
+
+export const postChat = async (name: string): Promise<chat> => {
+    const response = await fetch(`https://localhost:7111/chats`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: name,
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error(`Fehler beim Senden der Nachricht: ${response.status} - ${response.statusText}`);
+    }
+
+    return await response.json();
+}

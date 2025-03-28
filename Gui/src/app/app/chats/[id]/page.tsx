@@ -1,6 +1,6 @@
 "use client"
 
-import {notFound, usePathname} from "next/navigation";
+import {usePathname} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import SiteHeader from "@/components/site-header";
 import {z} from "zod";
@@ -34,8 +34,7 @@ export default function ChatPage() {
             await fetchChat(id).then(c => {
                 setChat(c)
                 if (c.messages) setMessages(c.messages)
-            })
-            
+            }).catch(() => {})
         }
         fetchData().then()
     }, [id])
