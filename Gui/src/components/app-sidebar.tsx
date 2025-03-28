@@ -7,8 +7,8 @@ import {
     SidebarHeader, SidebarMenu, SidebarMenuItem,
     SidebarMenuButton, SidebarGroup, SidebarGroupContent, SidebarGroupLabel
 } from "@/components/ui/sidebar";
-import React, {useEffect, useState} from "react";
-import {Home, PlusCircle, Route, Search, SearchIcon, Settings} from "lucide-react";
+import React, {useEffect, useRef, useState} from "react";
+import {Home, PenLine, PlusCircle, Route, Search, SearchIcon, Settings, Trash2} from "lucide-react";
 import AppSidebarUser from "@/components/app-sidebar-user";
 import Link from "next/link";
 import AppSidebarSearch from "@/components/app-sidebar-search";
@@ -28,6 +28,13 @@ import {
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem, ContextMenuSeparator,
+    ContextMenuShortcut,
+    ContextMenuTrigger
+} from "@/components/ui/context-menu";
 
 const NavItems = [
     {
@@ -68,7 +75,7 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
         setChats(prevState => [...prevState, {
             id: (prevState.length + 1).toString(),
             name: values.name,
-            messages: undefined, 
+            messages: undefined,
         }])
         setNewChatOpen(false)
     }
@@ -80,6 +87,14 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
 
         fetchData().then()
     }, [])
+
+    function onRename(chat: chat) {
+        console.log("Penis Rename", chat.name)
+    }
+
+    function onDelete(chat: chat) {
+        console.log("Penis Delete", chat.name)
+    }
 
     return (
         <Sidebar collapsible="offcanvas" {...props}>
@@ -126,7 +141,8 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                             <DialogDescription>Erstelle einen neuen Chat</DialogDescription>
                                         </DialogHeader>
                                         <Form {...form}>
-                                            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                                            <form onSubmit={form.handleSubmit(onSubmit)}
+                                                  className="flex flex-col gap-4">
                                                 <FormField
                                                     control={form.control}
                                                     name="name"
@@ -134,7 +150,8 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                                         <FormItem>
                                                             <FormLabel>Name</FormLabel>
                                                             <FormControl>
-                                                                <Input placeholder="Was braucht denn ein guter Goon?" autoComplete="off" {...field} />
+                                                                <Input placeholder="Was braucht denn ein guter Goon?"
+                                                                       autoComplete="off" {...field} />
                                                             </FormControl>
                                                             <FormDescription className="sr-only">
                                                                 Address
@@ -144,7 +161,7 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                                     )}
                                                 />
                                                 <Button type="submit" className="self-end">
-                                                    <Search />
+                                                    <Search/>
                                                     Suchen
                                                 </Button>
                                             </form>
@@ -159,9 +176,26 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                         <SidebarMenu>
                             {chats.toReversed().map((chat) => (
                                 <SidebarMenuItem key={chat.id}>
-                                    <SidebarMenuButton asChild>
-                                        <Link href={`/app/chats/${chat.id}`}>{chat.name}</Link>
-                                    </SidebarMenuButton>
+                                    <ContextMenu>
+                                        <ContextMenuTrigger asChild>
+                                            <SidebarMenuButton asChild>
+                                                <Link href={`/app/chats/${chat.id}`}>{chat.name}</Link>
+                                            </SidebarMenuButton>
+                                        </ContextMenuTrigger>
+                                        <ContextMenuContent className="w-48">
+                                            <ContextMenuItem onSelect={() => onRename(chat)}>
+                                                <PenLine/>
+                                                Rename
+                                                <ContextMenuShortcut>F2</ContextMenuShortcut>
+                                            </ContextMenuItem>
+                                            <ContextMenuSeparator/>
+                                            <ContextMenuItem variant="destructive" onSelect={() => onDelete(chat)}>
+                                                <Trash2/>
+                                                Delete
+                                                <ContextMenuShortcut>Del</ContextMenuShortcut>
+                                            </ContextMenuItem>
+                                        </ContextMenuContent>
+                                    </ContextMenu>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
