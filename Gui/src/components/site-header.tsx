@@ -3,7 +3,7 @@ import {Separator} from "@/components/ui/separator";
 import React from "react";
 import {
     Breadcrumb,
-    BreadcrumbItem,
+    BreadcrumbItem, BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator
@@ -38,7 +38,7 @@ export default function SiteHeader({title, variant="default"}: { title: string, 
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage className="text-base font-medium">Chats</BreadcrumbPage>
+                                    <BreadcrumbLink href="/app/chats" className="text-base font-medium">Chats</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>

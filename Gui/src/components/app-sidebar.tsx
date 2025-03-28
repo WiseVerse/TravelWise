@@ -4,11 +4,19 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarHeader, SidebarMenu, SidebarMenuItem,
-    SidebarMenuButton, SidebarGroup, SidebarGroupContent, SidebarGroupLabel
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuItem,
+    SidebarMenuButton,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
+    SidebarMenuSub,
+    SidebarMenuSubItem,
+    SidebarMenuSubButton
 } from "@/components/ui/sidebar";
 import React, {useEffect, useState} from "react";
-import {CirclePlus, Home, PenLine, PlusCircle, Route, SearchIcon, Settings, Trash2} from "lucide-react";
+import {CirclePlus, Home, MessageCircle, PenLine, PlusCircle, Route, SearchIcon, Settings, Trash2} from "lucide-react";
 import AppSidebarUser from "@/components/app-sidebar-user";
 import Link from "next/link";
 import AppSidebarSearch from "@/components/app-sidebar-search";
@@ -208,28 +216,38 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
 
 
                         <SidebarMenu>
-                            {chats.toReversed().map((chat) => (
-                                <SidebarMenuItem key={chat.id}>
-                                    <ContextMenu>
-                                        <ContextMenuTrigger asChild>
-                                            <SidebarMenuButton asChild>
-                                                <Link href={`/app/chats/${chat.id}`}>{chat.name}</Link>
-                                            </SidebarMenuButton>
-                                        </ContextMenuTrigger>
-                                        <ContextMenuContent className="w-48">
-                                            <ContextMenuItem onSelect={() => onRename(chat)}>
-                                                <PenLine/>
-                                                Rename
-                                            </ContextMenuItem>
-                                            <ContextMenuSeparator/>
-                                            <ContextMenuItem variant="destructive" onSelect={() => onDelete(chat)}>
-                                                <Trash2/>
-                                                Delete
-                                            </ContextMenuItem>
-                                        </ContextMenuContent>
-                                    </ContextMenu>
-                                </SidebarMenuItem>
-                            ))}
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/app/chats">
+                                        <MessageCircle/>
+                                        Alle Chats
+                                    </Link>
+                                </SidebarMenuButton>
+                                <SidebarMenuSub>
+                                    {chats.toReversed().map((chat) => (
+                                        <SidebarMenuSubItem key={chat.id}>
+                                            <ContextMenu>
+                                                <ContextMenuTrigger asChild>
+                                                    <SidebarMenuSubButton asChild>
+                                                        <Link href={`/app/chats/${chat.id}`}>{chat.name}</Link>
+                                                    </SidebarMenuSubButton>
+                                                </ContextMenuTrigger>
+                                                <ContextMenuContent className="w-48">
+                                                    <ContextMenuItem onSelect={() => onRename(chat)}>
+                                                        <PenLine/>
+                                                        Rename
+                                                    </ContextMenuItem>
+                                                    <ContextMenuSeparator/>
+                                                    <ContextMenuItem variant="destructive" onSelect={() => onDelete(chat)}>
+                                                        <Trash2/>
+                                                        Delete
+                                                    </ContextMenuItem>
+                                                </ContextMenuContent>
+                                            </ContextMenu>
+                                        </SidebarMenuSubItem>
+                                    ))}
+                                </SidebarMenuSub>
+                            </SidebarMenuItem>
                             <Dialog open={renameChatOpen} onOpenChange={setRenameChatOpen}>
                                 <DialogContent>
                                     <DialogHeader>
