@@ -68,7 +68,7 @@ export default function ChatPage() {
         <>
             {chat != null ? (
                 <>
-                    <SiteHeader title={chat.name}/>
+                    <SiteHeader title={chat.name} variant="chats"/>
                     <div className="h-full grid grid-rows-[1fr_auto] m-2 gap-2">
                         <div className="flex flex-col-reverse m-2 gap-2">
                             {messages.toReversed().map((message) => message.fromUser ? (
