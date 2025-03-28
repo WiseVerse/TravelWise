@@ -41,6 +41,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import {usePathname, useRouter} from "next/navigation";
 
 const NavItems = [
     {
@@ -82,6 +83,8 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
             name: "",
         },
     })
+    const router = useRouter()
+    const pathname = usePathname()
 
     async function onNewChatSubmit(values: z.infer<typeof newChatSchema>) {
         // Do something with the form values.
@@ -122,6 +125,9 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
         if (!selectedChat) return 
         await deleteChatFetch(selectedChat?.id.toString())
         setChats(await fetchChats())
+        if (pathname.includes(selectedChat.id)) {
+            router.push("/app")
+        } 
     }
 
     return (
