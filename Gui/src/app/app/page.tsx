@@ -1,6 +1,6 @@
 import SiteHeader from "@/components/site-header";
 
-export default function Home() {
+export default async function Home() {
     return (
         <>
             <SiteHeader title="Home"/>

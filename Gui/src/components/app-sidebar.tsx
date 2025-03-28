@@ -1,3 +1,5 @@
+"use client"
+
 import {
     Sidebar,
     SidebarContent,
@@ -5,17 +7,13 @@ import {
     SidebarHeader, SidebarMenu, SidebarMenuItem,
     SidebarMenuButton, SidebarGroup, SidebarGroupContent, SidebarGroupLabel
 } from "@/components/ui/sidebar";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Home, LoaderCircle, PlusCircle, Route, SearchIcon, Settings} from "lucide-react";
 import AppSidebarUser from "@/components/app-sidebar-user";
 import Link from "next/link";
 import AppSidebarSearch from "@/components/app-sidebar-search";
-
-export type chat = {
-    id: number;
-    name: string;
-    url: string;
-}
+import {fetchChats} from "@/lib/fetch";
+import {chat} from "@/lib/types";
 
 const NavItems = [
     {
@@ -35,20 +33,17 @@ const NavItems = [
     },
 ]
 
-export const chats: chat[] = [
-    {
-        id: 1,
-        name: "Wie Goone ich richtig?",
-        url: "/app/chats/1"
-    },
-    {
-        id: 2,
-        name: "Was ist ein Glory Hole?",
-        url: "/app/chats/2"
-    }
-]
-
 export default function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+    const [chats, setChats] = useState<chat[]>([])
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchChats().then(c => setChats(c))
+        }
+        
+        fetchData().then()
+    }, [])
+    
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -91,7 +86,7 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                             {chats.toReversed().map((chat) => (
                                 <SidebarMenuItem key={chat.id}>
                                     <SidebarMenuButton asChild>
-                                        <Link href={chat.url}>{chat.name}</Link>
+                                        <Link href={`/app/chats/${chat.id}`}>{chat.name}</Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}

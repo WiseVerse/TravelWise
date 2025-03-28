@@ -62,7 +62,7 @@ export default function AppSidebarSearch({chats}: { chats: chat[] }) {
                     <CommandGroup heading="Chats">
                         {chats.toReversed().map((chat) => (
                             <CommandItem key={chat.id} onSelect={() => {
-                                router.push(chat.url)
+                                router.push("/app/chats/" + chat.id);
                                 setOpen(false);
                             }}>
                                 {chat.name}
