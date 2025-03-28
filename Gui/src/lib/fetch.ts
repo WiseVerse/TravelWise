@@ -26,7 +26,7 @@ export const fetchChat = async (id: string): Promise<chat> => {
     if (!data.ok) {
         throw new Error(`Error fetching chat: ${data.statusText}`);
     }
-    
+
     return await data.json();
 }
 
@@ -68,6 +68,37 @@ export const postChat = async (name: string): Promise<chat> => {
 
     if (!response.ok) {
         throw new Error(`Fehler beim Senden der Nachricht: ${response.status} - ${response.statusText}`);
+    }
+
+    return await response.json();
+}
+
+export const deleteChatFetch = async (id: string): Promise<chat> => {
+    const response = await fetch(`https://localhost:7111/chats/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    if (!response.ok) {
+        throw new Error("Fehler beim Löschen eines Chats");
+    }
+    return await response.json();
+}
+
+export const renameChatFetch = async (id: string, newName: string): Promise<chat> => {
+    const response = await fetch(`https://localhost:7111/chats/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: newName,
+        })
+    })
+
+    if (!response.ok) {
+        throw new Error("Fehler beim Umbenennen eines Chats");
     }
 
     return await response.json();

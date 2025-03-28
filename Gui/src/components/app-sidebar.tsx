@@ -7,12 +7,12 @@ import {
     SidebarHeader, SidebarMenu, SidebarMenuItem,
     SidebarMenuButton, SidebarGroup, SidebarGroupContent, SidebarGroupLabel
 } from "@/components/ui/sidebar";
-import React, {useEffect, useRef, useState} from "react";
-import {Home, PenLine, PlusCircle, Route, Search, SearchIcon, Settings, Trash2} from "lucide-react";
+import React, {useEffect, useState} from "react";
+import {CirclePlus, Home, PenLine, PlusCircle, Route, SearchIcon, Settings, Trash2} from "lucide-react";
 import AppSidebarUser from "@/components/app-sidebar-user";
 import Link from "next/link";
 import AppSidebarSearch from "@/components/app-sidebar-search";
-import {fetchChats, postChat} from "@/lib/fetch";
+import {deleteChatFetch, fetchChats, postChat, renameChatFetch} from "@/lib/fetch";
 import {chat} from "@/lib/types";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
@@ -32,9 +32,15 @@ import {
     ContextMenu,
     ContextMenuContent,
     ContextMenuItem, ContextMenuSeparator,
-    ContextMenuShortcut,
     ContextMenuTrigger
 } from "@/components/ui/context-menu";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "@/components/ui/alert-dialog";
 
 const NavItems = [
     {
@@ -55,28 +61,34 @@ const NavItems = [
 ]
 
 const newChatSchema = z.object({
-    name: z.string().min(1, "Gib dem Chat einen Namen").trim()
+    name: z.string().min(1, "Name muss vorhanden sein").trim()
 })
 
 export default function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
     const [chats, setChats] = useState<chat[]>([])
     const [newChatOpen, setNewChatOpen] = useState(false)
-    const form = useForm<z.infer<typeof newChatSchema>>({
+    const [renameChatOpen, setRenameChatOpen] = useState(false)
+    const [deleteChatOpen, setDeleteChatOpen] = useState(false)
+    const [selectedChat, setSelectedChat] = useState<chat | null>(null)
+    const newChatForm = useForm<z.infer<typeof newChatSchema>>({
+        resolver: zodResolver(newChatSchema),
+        defaultValues: {
+            name: "",
+        },
+    })
+    const renameForm = useForm<z.infer<typeof newChatSchema>>({
         resolver: zodResolver(newChatSchema),
         defaultValues: {
             name: "",
         },
     })
 
-    async function onSubmit(values: z.infer<typeof newChatSchema>) {
+    async function onNewChatSubmit(values: z.infer<typeof newChatSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
         await postChat(values.name)
-        setChats(prevState => [...prevState, {
-            id: (prevState.length + 1).toString(),
-            name: values.name,
-            messages: undefined,
-        }])
+        setChats(await fetchChats())
+        newChatForm.reset()
         setNewChatOpen(false)
     }
 
@@ -89,11 +101,27 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
     }, [])
 
     function onRename(chat: chat) {
-        console.log("Penis Rename", chat.name)
+        setRenameChatOpen(true)
+        setSelectedChat(chat)
     }
 
     function onDelete(chat: chat) {
-        console.log("Penis Delete", chat.name)
+        setDeleteChatOpen(true)
+        setSelectedChat(chat)
+    }
+    
+    async function renameChat(values: z.infer<typeof newChatSchema>) {
+        if (!selectedChat) return    
+        await renameChatFetch(selectedChat?.id, values.name)
+        setChats(await fetchChats())
+        renameForm.reset()
+        setRenameChatOpen(false)
+    }
+    
+    async function deleteChat() {
+        if (!selectedChat) return 
+        await deleteChatFetch(selectedChat?.id.toString())
+        setChats(await fetchChats())
     }
 
     return (
@@ -140,11 +168,11 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                             <DialogTitle>Neuer Chat</DialogTitle>
                                             <DialogDescription>Erstelle einen neuen Chat</DialogDescription>
                                         </DialogHeader>
-                                        <Form {...form}>
-                                            <form onSubmit={form.handleSubmit(onSubmit)}
+                                        <Form {...newChatForm}>
+                                            <form onSubmit={newChatForm.handleSubmit(onNewChatSubmit)}
                                                   className="flex flex-col gap-4">
                                                 <FormField
-                                                    control={form.control}
+                                                    control={newChatForm.control}
                                                     name="name"
                                                     render={({field}) => (
                                                         <FormItem>
@@ -154,15 +182,15 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                                                        autoComplete="off" {...field} />
                                                             </FormControl>
                                                             <FormDescription className="sr-only">
-                                                                Address
+                                                                Name
                                                             </FormDescription>
                                                             <FormMessage/>
                                                         </FormItem>
                                                     )}
                                                 />
                                                 <Button type="submit" className="self-end">
-                                                    <Search/>
-                                                    Suchen
+                                                    <CirclePlus/>
+                                                    Submit
                                                 </Button>
                                             </form>
                                         </Form>
@@ -186,18 +214,68 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                             <ContextMenuItem onSelect={() => onRename(chat)}>
                                                 <PenLine/>
                                                 Rename
-                                                <ContextMenuShortcut>F2</ContextMenuShortcut>
                                             </ContextMenuItem>
                                             <ContextMenuSeparator/>
                                             <ContextMenuItem variant="destructive" onSelect={() => onDelete(chat)}>
                                                 <Trash2/>
                                                 Delete
-                                                <ContextMenuShortcut>Del</ContextMenuShortcut>
                                             </ContextMenuItem>
                                         </ContextMenuContent>
                                     </ContextMenu>
                                 </SidebarMenuItem>
                             ))}
+                            <Dialog open={renameChatOpen} onOpenChange={setRenameChatOpen}>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Chat umbenennen</DialogTitle>
+                                        <DialogDescription>Ausgewählter Chat: {selectedChat?.name}</DialogDescription>
+                                    </DialogHeader>
+                                    <Form {...renameForm}>
+                                        <form onSubmit={renameForm.handleSubmit(renameChat)}
+                                              className="flex flex-col gap-4">
+                                            <FormField
+                                                control={renameForm.control}
+                                                name="name"
+                                                render={({field}) => (
+                                                    <FormItem>
+                                                        <FormLabel>Name</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder={selectedChat?.name}
+                                                                   autoComplete="off" {...field} />
+                                                        </FormControl>
+                                                        <FormDescription className="sr-only">
+                                                            Name
+                                                        </FormDescription>
+                                                        <FormMessage/>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <Button type="submit" className="self-end">
+                                                Submit
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                </DialogContent>
+                            </Dialog>
+                            <AlertDialog open={deleteChatOpen} onOpenChange={setDeleteChatOpen}>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Diese Aktion kann nicht rückgängig gemacht werden und wird diesen Chat für
+                                            immer von unseren Servern löschen.
+                                            <br/>
+                                            Ausgewählter Chat: {selectedChat?.name}
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Abbruch</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => deleteChat()}>
+                                            Ok
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
