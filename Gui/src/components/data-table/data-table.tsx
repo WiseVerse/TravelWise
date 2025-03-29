@@ -30,7 +30,16 @@ import {
 import NewChatDialog from "@/components/data-table/newChatDialog";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input"
-import {ArrowLeft, ArrowRight, ChevronDown} from "lucide-react";
+import {ArrowLeft, ArrowRight, ChevronDown, Trash2} from "lucide-react";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import {deleteChatFetch} from "@/lib/fetch";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -48,6 +57,8 @@ export function DataTable<TData, TValue>({
     )
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
+    const [deleteSelectedOpen, setDeleteSelectedOpen] = React.useState<boolean>(false)
 
     const table = useReactTable({
         data,
@@ -59,13 +70,23 @@ export function DataTable<TData, TValue>({
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
         onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
         state: {
             sorting,
             columnFilters,
             columnVisibility,
+            rowSelection,
         },
     })
 
+
+    async function deleteSelectedChats() {
+        if (table.getFilteredSelectedRowModel().rows.length === 0) return 
+        for (const row of table.getFilteredSelectedRowModel().rows) {
+            await deleteChatFetch(row.getValue("id"))
+        }
+        window.location.reload()
+    }
 
     return (
         <div>
@@ -81,7 +102,7 @@ export function DataTable<TData, TValue>({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
-                            Columns <ChevronDown/>
+                            Spalten <ChevronDown/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -148,31 +169,61 @@ export function DataTable<TData, TValue>({
                                 </TableCell>
                             </TableRow>
                         )}
-                        <TableRow>
-                            <TableCell colSpan={columns.length} className="text-center">
-                                <NewChatDialog/>
-                            </TableCell>
-                        </TableRow>
                     </TableBody>
                 </Table>
             </div>
-            <div className="flex items-center justify-center space-x-2 py-4">
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                >
-                    <ArrowLeft/>
-                </Button>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                >
-                    <ArrowRight/>
-                </Button>
+            <div className="flex items-center justify-between space-x-2 py-2">
+                <div className="flex justify-center items-center text-sm text-muted-foreground gap-2">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant="outline" size="icon" className="hover:bg-destructive/10"
+                                    onClick={() => setDeleteSelectedOpen(true)}>
+                                <Trash2 className="text-destructive"/>
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            Ausgewählte Reihen löschen
+                        </TooltipContent>
+                    </Tooltip>
+                    <AlertDialog open={deleteSelectedOpen} onOpenChange={setDeleteSelectedOpen}>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Sind Sie sicher?</AlertDialogTitle>
+                                <AlertDialogDescription>Diese Aktion kann nicht rückgängig gemacht werden und wird
+                                    alle ausgewählten Chats für immer von unseren Servern löschen.</AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Abbruch</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => deleteSelectedChats()}>
+                                    Ok
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    <span>
+                        {table.getFilteredSelectedRowModel().rows.length} von{" "}
+                        {table.getFilteredRowModel().rows.length} Reihen ausgewählt.
+                    </span>
+                </div>
+                <div className="space-x-2">
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
+                        <ArrowLeft/>
+                    </Button>
+                    <NewChatDialog/>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
+                        <ArrowRight/>
+                    </Button>
+                </div>
             </div>
         </div>
     )

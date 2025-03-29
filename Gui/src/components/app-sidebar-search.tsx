@@ -64,8 +64,13 @@ export default function AppSidebarSearch({chats}: { chats: chat[] }) {
                             <CommandItem key={chat.id} onSelect={() => {
                                 router.push("/app/chats/" + chat.id);
                                 setOpen(false);
-                            }}>
-                                {chat.name}
+                            }} className="flex justify-between items-center">
+                                <span>
+                                    {chat.name}
+                                </span>
+                                <span className="text-muted-foreground">
+                                    {chat.created.split("T")[0] + " " + chat.created.split("T")[1].split(".")[0]}
+                                </span>
                             </CommandItem>
                         ))}
                     </CommandGroup>
