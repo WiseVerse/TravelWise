@@ -28,7 +28,9 @@ export default function AllChatPage() {
                     <LoaderCircle className="animate-spin"/>
                 </div>
             ) : (
-                <DataTable columns={columns} data={data.toReversed()} />
+                <div className="m-2">
+                    <DataTable columns={columns} data={data} />
+                </div>
             )}
         </>
     )

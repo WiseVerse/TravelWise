@@ -101,6 +101,9 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
         setChats(await fetchChats())
         newChatForm.reset()
         setNewChatOpen(false)
+        if (pathname.endsWith("chats")) {
+            window.location.reload()
+        }
     }
 
     useEffect(() => {
@@ -127,6 +130,9 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
         setChats(await fetchChats())
         renameForm.reset()
         setRenameChatOpen(false)
+        if (pathname.endsWith("chats") || pathname.includes(selectedChat.id)) {
+            window.location.reload()
+        }
     }
     
     async function deleteChat() {
@@ -138,7 +144,6 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
         } 
         if (pathname.endsWith("chats")) {
             window.location.reload()
-            //TODO: Seite refreshed nd wenn er auf Alle Chats Seite ist
         }
     }
 
@@ -228,7 +233,7 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                     </Link>
                                 </SidebarMenuButton>
                                 <SidebarMenuSub>
-                                    {chats.toReversed().map((chat) => (
+                                    {chats.toReversed().slice(0, 5).map((chat) => (
                                         <SidebarMenuSubItem key={chat.id}>
                                             <ContextMenu>
                                                 <ContextMenuTrigger asChild>
@@ -239,12 +244,12 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                                 <ContextMenuContent className="w-48">
                                                     <ContextMenuItem onSelect={() => onRename(chat)}>
                                                         <PenLine/>
-                                                        Rename
+                                                        Umbenennen
                                                     </ContextMenuItem>
                                                     <ContextMenuSeparator/>
                                                     <ContextMenuItem variant="destructive" onSelect={() => onDelete(chat)}>
                                                         <Trash2/>
-                                                        Delete
+                                                        Löschen
                                                     </ContextMenuItem>
                                                 </ContextMenuContent>
                                             </ContextMenu>

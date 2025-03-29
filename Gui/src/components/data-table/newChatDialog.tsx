@@ -8,47 +8,44 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
+import {CirclePlus} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {PenLine} from "lucide-react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
+import React from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {postChat} from "@/lib/fetch";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
-import React from "react";
-import {renameChatFetch} from "@/lib/fetch";
 
 const formSchema = z.object({
     name: z.string().min(1, "Name muss vorhanden sein").trim(),
 })
 
-export default function RenameDialog({ id, name }: { id: string, name: string }) {
-    const [open, setOpen] = React.useState(false);
+export default function NewChatDialog() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: ""
+            name: "",
         }
     });
-    
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        await renameChatFetch(id, values.name)
-        window.location.reload()
-        setOpen(false);
-        form.reset()
+        await postChat(values.name)
+            .then(() => window.location.reload())
     }
-    
-    return (    
-        <Dialog open={open} onOpenChange={setOpen}>
+
+    return (
+        <Dialog>
             <DialogTrigger asChild>
                 <Button size="icon" variant="outline">
-                    <PenLine/>
+                    <CirclePlus/>
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Chat Umbenennen</DialogTitle>
-                    <DialogDescription>Ausgewählter Chat: {name}</DialogDescription>
+                    <DialogTitle>Neuer Chat</DialogTitle>
+                    <DialogDescription>Erstelle einen neuen Chat</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2">
@@ -59,7 +56,7 @@ export default function RenameDialog({ id, name }: { id: string, name: string })
                                 <FormItem>
                                     <FormLabel>Name</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={name} autoComplete="off" {...field} />
+                                        <Input placeholder="Was bedeuted es zu goonen?" autoComplete="off" {...field} />
                                     </FormControl>
                                     <FormDescription className="sr-only">
                                         Name

@@ -1,6 +1,7 @@
 export type chat = {
     id: string;
     name: string;
+    created: string;
     messages?: message[];
 }
 
