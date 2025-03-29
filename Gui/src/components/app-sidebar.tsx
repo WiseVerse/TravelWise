@@ -136,6 +136,10 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
         if (pathname.includes(selectedChat.id)) {
             router.push("/app")
         } 
+        if (pathname.endsWith("chats")) {
+            window.location.reload()
+            //TODO: Seite refreshed nd wenn er auf Alle Chats Seite ist
+        }
     }
 
     return (
