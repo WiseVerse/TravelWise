@@ -181,7 +181,7 @@ export function DataTable<TData, TValue>({
                                 <Trash2 className="text-destructive"/>
                             </Button>
                         </TooltipTrigger>
-                        <TooltipContent>
+                        <TooltipContent side="bottom">
                             Ausgewählte Reihen löschen
                         </TooltipContent>
                     </Tooltip>
