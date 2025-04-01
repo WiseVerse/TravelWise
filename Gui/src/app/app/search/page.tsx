@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import SearchAddress from "@/components/search/address";
 import SearchCoordinates from "@/components/search/coordinates";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
@@ -12,6 +12,7 @@ import ChatSheet from "@/components/chat/chat-sheet";
 export default function SearchPage() {
 
     const mapRef = useRef<MapComponentRef>(null);
+    const [markerCoordinates, setMarkerCoordinates] = useState<{ lat: number; lng: number } | null>(null);
 
     // Diese Funktion wird von SearchAddress aufgerufen, wenn eine Adresse eingegeben wird.
     const handleAddressSearch = (address: string) => {
@@ -26,6 +27,10 @@ export default function SearchPage() {
             console.warn("mapRef.current ist null");
         }
     };
+
+    const coordinatesValue = markerCoordinates
+        ? `${markerCoordinates.lat.toFixed(5)}, ${markerCoordinates.lng.toFixed(5)}`
+        : "";
 
     return (
         <>
@@ -56,7 +61,7 @@ export default function SearchPage() {
                                     <CardDescription>Suchen Sie mit Koordinaten</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SearchCoordinates/>
+                                    <SearchCoordinates value={coordinatesValue} />
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -66,7 +71,7 @@ export default function SearchPage() {
 
                 </div>
 
-                <MapComponent ref={mapRef}/>
+                <MapComponent ref={mapRef} onMarkerChange={setMarkerCoordinates} />
             </div>
         </>
     );

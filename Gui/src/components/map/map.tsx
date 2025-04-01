@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, Marker, InfoWindow, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
 
 const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -15,7 +15,12 @@ export interface MapComponentRef {
     clearMarker: () => void;
 }
 
-const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
+interface MapComponentProps {
+    onMarkerChange?: (coords: { lat: number; lng: number } | null) => void;
+    directions?: google.maps.DirectionsResult | null;
+}
+
+const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref) => {
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCfMiJi1gvYZhSbmQqw2pK6vS2o9zERkvw",
     });
@@ -28,6 +33,13 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
     const onLoad = (map: google.maps.Map) => {
         console.log("GoogleMap onLoad ausgeführt:", map);
         mapRef.current = map;
+    };
+
+    const updateMarker = (position: { lat: number; lng: number } | null) => {
+        setMarkerPosition(position);
+        if (props.onMarkerChange) {
+            props.onMarkerChange(position);
+        }
     };
 
     useImperativeHandle(ref, () => ({
@@ -43,7 +55,7 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
                     const location = results[0].geometry.location;
                     const newCenter = { lat: location.lat(), lng: location.lng() };
                     setCenter(newCenter);
-                    setMarkerPosition(newCenter); // Marker an der neuen Position setzen
+                    updateMarker(newCenter); // Marker an der neuen Position setzen
                     // InfoWindow NICHT direkt anzeigen
                     if (mapRef.current) {
                         mapRef.current.panTo(newCenter);
@@ -55,7 +67,7 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
         },
         clearMarker() {
             console.log("clearMarker aufgerufen");
-            setMarkerPosition(null);
+            updateMarker(null);
             setShowInfoWindow(false);
         },
     }));
@@ -67,11 +79,11 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
                 lat: e.latLng.lat(),
                 lng: e.latLng.lng(),
             };
-            setMarkerPosition(clickedPosition);
-            // InfoWindow NICHT direkt anzeigen
+            updateMarker(clickedPosition);
             console.log("Map clicked at: ", clickedPosition);
         }
     };
+
 
     return isLoaded ? (
         <GoogleMap
@@ -86,50 +98,53 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
                 cameraControl: false,
             }}
         >
-            {/* Marker und InfoWindow anzeigen, wenn markerPosition gesetzt ist */}
-            {markerPosition && (
-                <>
-                    <Marker
-                        draggable
-                        position={markerPosition}
-                        onClick={() => setShowInfoWindow(true)}
-                        onDragEnd={(e) => {
-                            const newLat = e.latLng?.lat();
-                            const newLng = e.latLng?.lng();
-                            if (newLat != null && newLng != null) {
-                                const newPosition = { lat: newLat, lng: newLng };
-                                setMarkerPosition(newPosition);
-                                console.log("Neue Markerkoordinaten:", newPosition);
-                            }
-                        }}
-                    />
-                    {showInfoWindow && (
-                        <InfoWindow
+            {props.directions ? (
+                <DirectionsRenderer directions={props.directions} />
+            ) : (
+                markerPosition && (
+                    <>
+                        <Marker
+                            draggable
                             position={markerPosition}
-                            onCloseClick={() => setShowInfoWindow(false)}
-                        >
-                            <div>
-                                <button
-                                    style={{
-                                        background: 'red',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '50%',
-                                        width: '24px',
-                                        height: '24px',
-                                        cursor: 'pointer',
-                                    }}
-                                    onClick={() => {
-                                        setMarkerPosition(null);
-                                        setShowInfoWindow(false);
-                                    }}
-                                >
-                                    X
-                                </button>
-                            </div>
-                        </InfoWindow>
-                    )}
-                </>
+                            onClick={() => setShowInfoWindow(true)}
+                            onDragEnd={(e) => {
+                                const newLat = e.latLng?.lat();
+                                const newLng = e.latLng?.lng();
+                                if (newLat != null && newLng != null) {
+                                    const newPosition = { lat: newLat, lng: newLng };
+                                    updateMarker(newPosition);
+                                    console.log("Neue Markerkoordinaten:", newPosition);
+                                }
+                            }}
+                        />
+                        {showInfoWindow && (
+                            <InfoWindow
+                                position={markerPosition}
+                                onCloseClick={() => setShowInfoWindow(false)}
+                            >
+                                <div>
+                                    <button
+                                        style={{
+                                            background: 'red',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '50%',
+                                            width: '24px',
+                                            height: '24px',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={() => {
+                                            updateMarker(null);
+                                            setShowInfoWindow(false);
+                                        }}
+                                    >
+                                        X
+                                    </button>
+                                </div>
+                            </InfoWindow>
+                        )}
+                    </>
+                )
             )}
         </GoogleMap>
     ) : (
