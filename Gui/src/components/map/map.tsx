@@ -2,6 +2,7 @@
 
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import {toast} from "sonner";
 
 const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -44,7 +45,7 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
                         mapRef.current.panTo(newCenter);
                     }
                 } else {
-                    console.error('Geocode war nicht erfolgreich: ' + status);
+                    toast.error(`Ort ${address} nicht gefunden`)
                 }
             });
         },
@@ -56,6 +57,10 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
             mapContainerStyle={containerStyle}
             center={center}
             zoom={12}
+            options={{
+                mapTypeControl: false,
+                streetViewControl: false,
+            }}
         >
             {/* Hier können weitere Komponenten wie Marker eingefügt werden */}
         </GoogleMap>
