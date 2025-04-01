@@ -83,6 +83,7 @@ const MapComponent = forwardRef<MapComponentRef>((props, ref) => {
             options={{
                 mapTypeControl: false,
                 streetViewControl: false,
+                cameraControl: false,
             }}
         >
             {/* Marker und InfoWindow anzeigen, wenn markerPosition gesetzt ist */}

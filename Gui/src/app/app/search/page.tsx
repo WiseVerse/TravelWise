@@ -7,9 +7,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import SiteHeader from "@/components/site-header";
 import MapComponent, {MapComponentRef} from "@/components/map/map";
-import {Button} from "@/components/ui/button";
-import {SquareArrowOutUpRight} from "lucide-react";
-import Link from "next/link";
+import ChatSheet from "@/components/chat/chat-sheet";
 
 export default function SearchPage() {
 
@@ -63,24 +61,11 @@ export default function SearchPage() {
                             </Card>
                         </TabsContent>
                     </Tabs>
-                    
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Chat</CardTitle>
-                            <CardDescription>Weiter zum Chat</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Button size="icon" variant="outline" asChild>
-                                <Link href="">
-                                    <SquareArrowOutUpRight/>
-                                    
-                                </Link>
-                                
-                            </Button>
-                        </CardContent>
-                    </Card>
+
+                    <ChatSheet/>
+
                 </div>
-                
+
                 <MapComponent ref={mapRef}/>
             </div>
         </>
