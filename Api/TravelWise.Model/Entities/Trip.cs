@@ -1,4 +1,6 @@
-﻿namespace TravelWise.Model.Entities;
+﻿using StockWise.Model.Entities;
+
+namespace TravelWise.Model.Entities;
 using System;
 using System.Collections.Generic;
 
