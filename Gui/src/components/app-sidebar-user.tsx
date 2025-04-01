@@ -13,9 +13,11 @@ import {ChevronsUpDown, LogOut} from "lucide-react";
 import {useIsMobile} from "@/hooks/use-mobile";
 import Link from "next/link";
 
+const avatarLink = "https://a.espncdn.com/i/headshots/nba/players/full/1966.png"
+
 export default function AppSidebarUser() {
     const isMobile = useIsMobile()
-    
+
     return (
         <SidebarMenu>
             <SidebarMenuItem>
@@ -26,7 +28,7 @@ export default function AppSidebarUser() {
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
-                                <AvatarImage src="https://github.com/shadcn.png" alt="A" />
+                                <AvatarImage src={avatarLink} alt="A"/>
                                 <AvatarFallback className="rounded-lg">A</AvatarFallback>
                             </Avatar>
 
@@ -35,7 +37,7 @@ export default function AppSidebarUser() {
                                 <span className="truncate text-xs">account@mail.com</span>
                             </div>
 
-                            <ChevronsUpDown className="ml-auto size-4" />
+                            <ChevronsUpDown className="ml-auto size-4"/>
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -47,7 +49,8 @@ export default function AppSidebarUser() {
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage src="https://github.com/shadcn.png" alt="A" />
+                                    <AvatarImage src={avatarLink}
+                                                 alt="A"/>
                                     <AvatarFallback className="rounded-lg">A</AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -59,7 +62,7 @@ export default function AppSidebarUser() {
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem asChild>
                             <Link href="/auth/login">
-                                <LogOut />
+                                <LogOut/>
                                 Log out
                             </Link>
                         </DropdownMenuItem>
