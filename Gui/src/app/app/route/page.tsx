@@ -4,8 +4,9 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import SearchRoute from "@/components/search/route";
 import React, {useState} from "react";
 import SiteHeader from "@/components/site-header";
-import {Skeleton} from "@/components/ui/skeleton";
 import MapComponent from "@/components/map/map";
+import {toast} from "sonner";
+import ChatSheet from "@/components/chat/chat-sheet";
 
 export default function Page() {
     const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
@@ -24,7 +25,7 @@ export default function Page() {
                         console.log("Route berechnet:", result);
                         setDirections(result);
                     } else {
-                        console.error("Route konnte nicht berechnet werden: " + status);
+                        toast.error("Route konnte nicht berechnet werden. Versuchen Sie das Zielland nach der Adresse hinzuzufügen");
                     }
                 }
             );
@@ -50,14 +51,7 @@ export default function Page() {
                         </CardContent>
                     </Card>
 
-                    <Skeleton className="row-span-2"/>
-
-                    <Card className="flex flex-col h-full max-h-screen">
-                        <CardHeader>
-                            <CardTitle>Info</CardTitle>
-                            <CardDescription>Info zur Route</CardDescription>
-                        </CardHeader>
-                    </Card>
+                    <ChatSheet/>
                 </div>
                 <MapComponent directions={directions} />
             </div>

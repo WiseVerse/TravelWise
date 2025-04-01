@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
-const coordinateRegex = /^(\d{1,2}\.\d{5,})°[NS] (\d{1,3}\.\d{5,})°[EW]$/;
+const coordinateRegex = /^-?\d{1,2}\.\d{1,6},\s?-?\d{1,3}\.\d{1,6}$/;
 
 const formSchema = z.object({
     coordinates: z

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { GoogleMap, Marker, InfoWindow, DirectionsRenderer, useJsApiLoader } from '@react-google-maps/api';
+import {GoogleMap, Marker, InfoWindow, useJsApiLoader, DirectionsRenderer} from '@react-google-maps/api';
+import {toast} from "sonner";
 
 const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -61,7 +62,7 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                         mapRef.current.panTo(newCenter);
                     }
                 } else {
-                    console.error('Geocode war nicht erfolgreich: ' + status);
+                    toast.error(`Kein Ort namens ${address} gefunden`);
                 }
             });
         },
