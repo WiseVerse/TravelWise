@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import SearchAddress from "@/components/search/address";
 import SearchCoordinates from "@/components/search/coordinates";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
@@ -13,6 +13,7 @@ export default function SearchPage() {
 
     const mapRef = useRef<MapComponentRef>(null);
     const [markerCoordinates, setMarkerCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+    const [markerAddress, setMarkerAddress] = useState("");
 
     // Diese Funktion wird von SearchAddress aufgerufen, wenn eine Adresse eingegeben wird.
     const handleAddressSearch = (address: string) => {
@@ -28,10 +29,26 @@ export default function SearchPage() {
         }
     };
 
+    useEffect(() => {
+        if (markerCoordinates && window.google) {
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: markerCoordinates }, (results, status) => {
+                if (status === "OK" && results && results.length > 0) {
+                    console.log("Reverse geocoding result:", results[0].formatted_address);
+                    setMarkerAddress(results[0].formatted_address);
+                } else {
+                    console.error("Reverse geocoding failed:", status);
+                    setMarkerAddress("");
+                }
+            });
+        } else {
+            setMarkerAddress("");
+        }
+    }, [markerCoordinates]);
+
     const coordinatesValue = markerCoordinates
         ? `${markerCoordinates.lat.toFixed(5)}, ${markerCoordinates.lng.toFixed(5)}`
         : "";
-
     return (
         <>
             <SiteHeader title="Suche"/>
@@ -50,7 +67,7 @@ export default function SearchPage() {
                                     <CardDescription>Suchen Sie nach Adressen</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SearchAddress onSearch={handleAddressSearch}/>
+                                    <SearchAddress onSearch={handleAddressSearch} value={markerAddress}/>
                                 </CardContent>
                             </Card>
                         </TabsContent>
