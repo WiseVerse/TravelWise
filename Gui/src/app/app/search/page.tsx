@@ -8,9 +8,10 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import SiteHeader from "@/components/site-header";
 import MapComponent, {MapComponentRef} from "@/components/map/map";
 import ChatSheet from "@/components/chat/chat-sheet";
+import {Button} from "@/components/ui/button";
+import {MapPin} from "lucide-react";
 
 export default function SearchPage() {
-
     const mapRef = useRef<MapComponentRef>(null);
     const [markerCoordinates, setMarkerCoordinates] = useState<{ lat: number; lng: number } | null>(null);
     const [markerAddress, setMarkerAddress] = useState("");
@@ -83,7 +84,14 @@ export default function SearchPage() {
                             </Card>
                         </TabsContent>
                     </Tabs>
-
+                    <Button
+                        variant="outline"
+                        onClick={() => mapRef.current?.resetToUserLocation()}
+                    >
+                        <MapPin/>
+                        Mein Standort
+                    </Button>
+                    
                     <ChatSheet/>
 
                 </div>
