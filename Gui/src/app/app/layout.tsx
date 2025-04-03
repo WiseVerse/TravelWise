@@ -7,7 +7,7 @@ export default function Layout({children}: Readonly<{
 }>) {
     return (
         <SidebarProvider>
-            <AppSidebar/>
+            <AppSidebar variant="inset"/>
             <SidebarInset>
                 {children}
             </SidebarInset>

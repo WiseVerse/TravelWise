@@ -1,8 +1,10 @@
-﻿using TravelWise.Model.Entities;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using StockWise.Model.Entities;
+using TravelWise.Model.Entities;
 namespace TravelWise.Model.Configuration;
 using Microsoft.EntityFrameworkCore;
 
-public class TravelWiseContext : DbContext
+public class TravelWiseContext : IdentityDbContext<User>
 {
     public TravelWiseContext(DbContextOptions<TravelWiseContext> options) : base(options) { }
     //ka

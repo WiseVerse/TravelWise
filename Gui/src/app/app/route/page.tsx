@@ -1,36 +1,60 @@
+"use client"
+
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import SearchRoute from "@/components/search/route";
-import {ScrollArea} from "@/components/ui/scroll-area";
-import React from "react";
+import React, {useState} from "react";
+import SiteHeader from "@/components/site-header";
+import MapComponent from "@/components/map/map";
+import {toast} from "sonner";
+import ChatSheet from "@/components/chat/chat-sheet";
 
-export default function Page(){
+export default function Page() {
+    const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+
+    const handleRouteSubmit = (data: { start: string; end: string }) => {
+        if (window.google) {
+            const directionsService = new window.google.maps.DirectionsService();
+            directionsService.route(
+                {
+                    origin: data.start,
+                    destination: data.end,
+                    travelMode: window.google.maps.TravelMode.DRIVING,
+                },
+                (result, status) => {
+                    if (status === "OK" && result) {
+                        console.log("Route berechnet:", result);
+                        setDirections(result);
+                    } else {
+                        toast.error("Route konnte nicht berechnet werden. Versuchen Sie das Zielland nach der Adresse hinzuzufügen");
+                    }
+                }
+            );
+        }
+    };
+
+    const handleRouteClear = () => {
+        setDirections(null);
+    };
+
     return (
-        <div className="card-container">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Route</CardTitle>
-                    <CardDescription>Geben Sie eine Start und Ziel Adresse ein</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <SearchRoute/>
-                </CardContent>
-            </Card>
-            <Card className="flex flex-col h-full max-h-screen">
-                <CardHeader>
-                    <CardTitle>Info</CardTitle>
-                    <CardDescription>Info zur Route</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-hidden">
-                    <ScrollArea className="h-full max-h-screen overflow-auto">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam molestie libero lacus, at feugiat
-                        diam porta pulvinar. Vestibulum mollis, orci eu convallis lobortis, justo magna tempus purus, in
-                        euismod turpis diam eu odio. Morbi sit amet pellentesque lectus. Praesent euismod odio ut diam
-                        ullamcorper, non commodo orci varius. Phasellus volutpat lacinia tortor vitae ullamcorper. Morbi
-                        consequat augue tincidunt, lacinia arcu eu, consectetur ipsum. Nam maximus leo sed magna posuere
-                        rhoncus. Pellentesque dignissim tellus vestibulum elit luctus tincidunt.
-                    </ScrollArea>
-                </CardContent>
-            </Card>
-        </div>
+        <>
+            <SiteHeader title="Route"/>
+            <div className="h-full relative">
+                <div className="fixed w-96 z-20 m-2 flex flex-col gap-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Route</CardTitle>
+                            <CardDescription>Geben Sie eine Start und Ziel Adresse ein</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <SearchRoute onRouteSubmit={handleRouteSubmit} onRouteClear={handleRouteClear}/>
+                        </CardContent>
+                    </Card>
+
+                    <ChatSheet/>
+                </div>
+                <MapComponent directions={directions} />
+            </div>
+        </>
     )
 }

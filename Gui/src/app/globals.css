@@ -9,6 +9,12 @@
     --font-mono: var(--font-geist-mono);
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
 :root {
     --background: hsl(0 0% 100%);
     --foreground: hsl(0 0% 3.9%);
@@ -130,5 +136,5 @@
 }
 
 .card-container {
-    @apply h-full w-[20vw] m-2 grid grid-cols-1 grid-rows-[auto_1fr] gap-4;
+    @apply h-full m-2 grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] gap-4;
 }

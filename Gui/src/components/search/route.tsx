@@ -6,26 +6,44 @@ import {useForm} from "react-hook-form"
 import {Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-import {Route} from "lucide-react";
+import {Route, Trash2} from "lucide-react";
+import {useEffect} from "react";
 
 const formSchema = z.object({
-    start: z.string().min(2).max(250),
-    end: z.string().min(2).max(250),
+    start: z.string()
+        .min(1, "Start Adresse muss vorhanden sein")
+        .trim(),
+    end: z.string()
+        .min(1, "Ziel Adresse muss vorhanden sein")
+        .trim(),
 })
 
-export default function SearchRoute() {
+interface SearchRouteProps {
+    startValue?: string;
+    onRouteSubmit?: (data: { start: string; end: string }) => void;
+    onRouteClear?: () => void;
+}
+
+export default function SearchRoute({ startValue, onRouteSubmit, onRouteClear }: SearchRouteProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            start: "",
+            start: startValue || "",
             end: "",
         },
-    })
+    });
+
+    useEffect(() => {
+        if (startValue) {
+            form.setValue("start", startValue);
+        }
+    }, [startValue, form]);
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
         console.log(values)
+        if (onRouteSubmit) {
+            onRouteSubmit(values);
+        }
     }
 
     return (
@@ -38,7 +56,7 @@ export default function SearchRoute() {
                         <FormItem>
                             <FormLabel>Start</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input placeholder="Musterstraße 1" {...field} autoComplete="off"/>
                             </FormControl>
                             <FormDescription className="sr-only">
                                 Start Address
@@ -54,7 +72,7 @@ export default function SearchRoute() {
                         <FormItem>
                             <FormLabel>Ziel</FormLabel>
                             <FormControl>
-                                <Input placeholder="Musterstraße 1" {...field} />
+                                <Input placeholder="Musterstraße 1" {...field} autoComplete="off"/>
                             </FormControl>
                             <FormDescription className="sr-only">
                                 Ziel Address
@@ -63,10 +81,16 @@ export default function SearchRoute() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">
-                    <Route />
-                    Berechnen
-                </Button>
+                <div className="flex gap-2">
+                    <Button type="submit">
+                        <Route />
+                        Berechnen
+                    </Button>
+                    <Button type="button" variant="destructive" onClick={onRouteClear}>
+                        <Trash2 />
+                        Route löschen
+                    </Button>
+                </div>
             </form>
         </Form>
     )
