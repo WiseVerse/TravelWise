@@ -14,6 +14,8 @@ const initialCenter = {lat: 48.4167, lng: 15.6167};
 export interface MapComponentRef {
     recenterMap: (address: string) => void;
     clearMarker: () => void;
+
+    resetToUserLocation: () => void;
 }
 
 interface MapComponentProps {
@@ -104,6 +106,17 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                 clearMarker() {
                     updateMarker(null);
                     setShowInfoWindow(false);
+                },
+                resetToUserLocation() {
+                    if (userLocation) {
+                        setCenter(userLocation);
+                        if (mapRef.current) {
+                            mapRef.current.panTo(userLocation);
+                        }
+                        console.log("Karte zurückgesetzt auf gespeicherte Position:", userLocation);
+                    } else {
+                        toast.error("Keine gespeicherte Benutzerposition gefunden.");
+                    }
                 },
             }));
 

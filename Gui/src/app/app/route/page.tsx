@@ -2,13 +2,16 @@
 
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import SearchRoute from "@/components/search/route";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import SiteHeader from "@/components/site-header";
-import MapComponent from "@/components/map/map";
+import MapComponent, {MapComponentRef} from "@/components/map/map";
 import {toast} from "sonner";
 import ChatSheet from "@/components/chat/chat-sheet";
+import {Button} from "@/components/ui/button";
+import {MapPin} from "lucide-react";
 
 export default function Page() {
+    const mapRef = useRef<MapComponentRef>(null);
     const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
     const handleRouteSubmit = (data: { start: string; end: string }) => {
@@ -50,10 +53,17 @@ export default function Page() {
                             <SearchRoute onRouteSubmit={handleRouteSubmit} onRouteClear={handleRouteClear}/>
                         </CardContent>
                     </Card>
+                    <Button
+                        variant="outline"
+                        onClick={() => mapRef.current?.resetToUserLocation()}
+                    >
+                        <MapPin/>
+                        Mein Standort
+                    </Button>
 
                     <ChatSheet/>
                 </div>
-                <MapComponent directions={directions} />
+                <MapComponent ref={mapRef} directions={directions} />
             </div>
         </>
     )
