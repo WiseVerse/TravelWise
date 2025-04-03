@@ -68,7 +68,7 @@ export default function SearchPage() {
                                     <CardDescription>Suchen Sie nach Adressen</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SearchAddress onSearch={handleAddressSearch} value={markerAddress}/>
+                                    <SearchAddress onSearchAction={handleAddressSearch} value={markerAddress}/>
                                 </CardContent>
                             </Card>
                         </TabsContent>

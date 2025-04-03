@@ -17,11 +17,11 @@ const formSchema = z.object({
 
 // Hier definieren wir die Props, die auch einen onSearch Callback beinhalten
 interface SearchAddressProps {
-    onSearch: (address: string) => void;
+    onSearchAction: (address: string) => void;
     value?: string;
 }
 
-export default function SearchAddress({ onSearch, value }: SearchAddressProps) {
+export default function SearchAddress({ onSearchAction, value }: SearchAddressProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,7 +37,7 @@ export default function SearchAddress({ onSearch, value }: SearchAddressProps) {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Statt nur console.log, rufen wir den Callback auf
-        onSearch(values.search);
+        onSearchAction(values.search);
         console.log("Form submitted", values)
     }
 
