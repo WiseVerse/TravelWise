@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import {Search, Trash2} from "lucide-react";
 import {useEffect} from "react";
 
 const formSchema = z.object({
@@ -18,10 +18,11 @@ const formSchema = z.object({
 // Hier definieren wir die Props, die auch einen onSearch Callback beinhalten
 interface SearchAddressProps {
     onSearchAction: (address: string) => void;
+    onResetAction: () => void;
     value?: string;
 }
 
-export default function SearchAddress({ onSearchAction, value }: SearchAddressProps) {
+export default function SearchAddress({ onSearchAction, onResetAction, value }: SearchAddressProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -60,10 +61,19 @@ export default function SearchAddress({ onSearchAction, value }: SearchAddressPr
                         </FormItem>
                     )}
                 />
-                <Button type="submit">
-                    <Search />
-                    Suchen
-                </Button>
+                <div className="flex gap-2">
+                    <Button type="submit">
+                        <Search/>
+                        Suchen
+                    </Button>
+                    <Button type="button" variant="destructive" onClick={() => {
+                        if (onResetAction) onResetAction()
+                        form.reset()
+                    }}>
+                        <Trash2 />
+                        Zurücksetzen
+                    </Button>
+                </div>
             </form>
         </Form>
     )

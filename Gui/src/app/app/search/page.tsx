@@ -29,6 +29,10 @@ export default function SearchPage() {
             console.warn("mapRef.current ist null");
         }
     };
+    
+    const handleResetAddress = () => {
+        if (mapRef.current) mapRef.current.clearMarker()
+    }
 
     useEffect(() => {
         if (markerCoordinates && window.google) {
@@ -68,7 +72,7 @@ export default function SearchPage() {
                                     <CardDescription>Suchen Sie nach Adressen</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SearchAddress onSearchAction={handleAddressSearch} value={markerAddress}/>
+                                    <SearchAddress onSearchAction={handleAddressSearch} onResetAction={handleResetAddress} value={markerAddress}/>
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -79,7 +83,7 @@ export default function SearchPage() {
                                     <CardDescription>Suchen Sie mit Koordinaten</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <SearchCoordinates value={coordinatesValue} />
+                                    <SearchCoordinates onSearchAction={handleAddressSearch} onResetAction={handleResetAddress} value={coordinatesValue} />
                                 </CardContent>
                             </Card>
                         </TabsContent>
