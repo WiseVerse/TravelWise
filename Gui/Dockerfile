@@ -1,5 +1,5 @@
 # 1. Build-Stage: Next.js-Anwendung bauen
-FROM node:20-alpine AS builder
+FROM node:latest AS builder
 WORKDIR /app
 
 # 2. Paketdateien kopieren & Abhängigkeiten installieren
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 # 5. Production-Stage: Kleinere, optimierte Runtime
-FROM node:20-alpine AS runner
+FROM node:latest AS runner
 WORKDIR /app
 
 # 6. Nur das Nötigste kopieren (kein Entwicklungs-Code)
