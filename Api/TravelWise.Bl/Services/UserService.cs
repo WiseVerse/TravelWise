@@ -1,8 +1,8 @@
-﻿using StockWise.Bl.Interfaces;
-using StockWise.Domain.Interfaces;
-using StockWise.Model.Entities;
+﻿using TravelWise.Bl.Interfaces;
+using TravelWise.Domain.Interfaces;
+using TravelWise.Model.Entities;
 
-namespace StockWise.Bl.Services;
+namespace TravelWise.Bl.Services;
 
 public class UserService(IUserRepository repository)
     : AService<User>(repository), IUserService

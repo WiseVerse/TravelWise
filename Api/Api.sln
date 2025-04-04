@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelWise.Model", "TravelW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelWise.Domain", "TravelWise.Domain\TravelWise.Domain.csproj", "{FF63F5FB-3BB5-4AE0-B5F1-45B3C699E4CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelWise.BusinessLogic", "TravelWise.BusinessLogic\TravelWise.BusinessLogic.csproj", "{115E2403-6EB8-45FC-8B36-B5DA658F3EF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelWise.Bl", "TravelWise.Bl\TravelWise.Bl.csproj", "{115E2403-6EB8-45FC-8B36-B5DA658F3EF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

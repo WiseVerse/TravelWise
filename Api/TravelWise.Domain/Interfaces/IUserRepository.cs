@@ -1,8 +1,6 @@
-﻿
-using StockWise.Model.Entities;
-using TravelWise.Domain.Interfaces;
+﻿using TravelWise.Model.Entities;
 
-namespace StockWise.Domain.Interfaces;
+namespace TravelWise.Domain.Interfaces;
 
 public interface IUserRepository: IRepository<User>
 {

@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
+namespace TravelWise.Bl.Interfaces;
 
 public interface ITokenManagerService
 {

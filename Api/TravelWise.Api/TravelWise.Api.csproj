@@ -20,10 +20,6 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.3" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.0" />
     </ItemGroup>
@@ -35,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TravelWise.BusinessLogic\TravelWise.BusinessLogic.csproj" />
+      <ProjectReference Include="..\TravelWise.Bl\TravelWise.Bl.csproj" />
       <ProjectReference Include="..\TravelWise.Domain\TravelWise.Domain.csproj" />
       <ProjectReference Include="..\TravelWise.Model\TravelWise.Model.csproj" />
     </ItemGroup>

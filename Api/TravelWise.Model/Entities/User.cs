@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace StockWise.Model.Entities;
+namespace TravelWise.Model.Entities;
 
 public class User: IdentityUser
 {
