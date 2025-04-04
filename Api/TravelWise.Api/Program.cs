@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -136,7 +137,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 # region services
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ITokenManagerService, TokenManagerService>();
-builder.Services.AddTransient<IEmailSender<User>, DummyEmailSender>();
+builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 # endregion
 
 # region cors
