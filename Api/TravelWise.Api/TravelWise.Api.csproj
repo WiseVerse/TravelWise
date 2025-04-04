@@ -25,15 +25,15 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\TravelWise.Bl\TravelWise.Bl.csproj" />
       <ProjectReference Include="..\TravelWise.Domain\TravelWise.Domain.csproj" />
       <ProjectReference Include="..\TravelWise.Model\TravelWise.Model.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
