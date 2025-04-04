@@ -3,9 +3,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using TravelWise.Bl.Interfaces;
 using User = TravelWise.Model.Entities.User;
 
-namespace TravelWise.BusinessLogic.Services;
+namespace TravelWise.Bl.Services;
 
 public class TokenManagerService(IConfiguration config) : ITokenManagerService
 {

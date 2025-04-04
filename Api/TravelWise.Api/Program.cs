@@ -1,16 +1,21 @@
+using System;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using StockWise.Bl.Interfaces;
-using StockWise.Bl.Services;
-using StockWise.Domain.Interfaces;
-using StockWise.Domain.Repositories;
+using TravelWise.Bl.Interfaces;
+using TravelWise.Bl.Services;
+using TravelWise.Domain.Interfaces;
+using TravelWise.Domain.Repository;
 using TravelWise.Model.Configuration;
 using User = TravelWise.Model.Entities.User;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -82,7 +87,6 @@ if (jwtKey is null)
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<TravelWiseContext>()
-    .AddDefaultUI()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options =>
@@ -133,6 +137,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 # region services
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ITokenManagerService, TokenManagerService>();
+builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
 # endregion
 
 # region cors

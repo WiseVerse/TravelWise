@@ -8,6 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TravelWise.Api/TravelWise.Api.csproj", "TravelWise.Api/"]
+COPY ["TravelWise.Domain/TravelWise.Domain.csproj", "TravelWise.Domain/"]
+COPY ["TravelWise.Model/TravelWise.Model.csproj", "TravelWise.Model/"]
+COPY ["TravelWise.Bl/TravelWise.Bl.csproj", "TravelWise.Bl/"]
 RUN dotnet restore "TravelWise.Api/TravelWise.Api.csproj"
 COPY . .
 WORKDIR "/src/TravelWise.Api"
