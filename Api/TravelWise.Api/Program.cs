@@ -137,7 +137,7 @@ builder.Services.AddTransient<IUserRepository, UserRepository>();
 # region services
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ITokenManagerService, TokenManagerService>();
-builder.Services.AddTransient<IEmailSender, DummyEmailSender>();
+builder.Services.AddTransient<IEmailSender<User>, DummyEmailSender>();
 # endregion
 
 # region cors
