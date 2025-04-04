@@ -7,7 +7,6 @@ import {Form, FormControl, FormDescription, FormField, FormLabel, FormItem, Form
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Route, Trash2} from "lucide-react";
-import {useEffect} from "react";
 
 const formSchema = z.object({
     start: z.string()
@@ -24,20 +23,14 @@ interface SearchRouteProps {
     onRouteClear?: () => void;
 }
 
-export default function SearchRoute({ startValue, onRouteSubmit, onRouteClear }: SearchRouteProps) {
+export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRouteProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            start: startValue || "",
+            start: "",
             end: "",
         },
     });
-
-    useEffect(() => {
-        if (startValue) {
-            form.setValue("start", startValue);
-        }
-    }, [startValue, form]);
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         console.log(values)
@@ -86,7 +79,10 @@ export default function SearchRoute({ startValue, onRouteSubmit, onRouteClear }:
                         <Route />
                         Berechnen
                     </Button>
-                    <Button type="button" variant="destructive" onClick={onRouteClear}>
+                    <Button type="button" variant="destructive" onClick={() => {
+                        if (onRouteClear) onRouteClear()
+                        form.reset()
+                    }}>
                         <Trash2 />
                         Route löschen
                     </Button>

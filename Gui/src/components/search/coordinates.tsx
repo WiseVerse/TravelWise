@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import {Search, Trash2} from "lucide-react";
 
 const coordinateRegex = /^-?\d{1,2}\.\d{1,6},\s?-?\d{1,3}\.\d{1,6}$/;
 
@@ -30,10 +30,12 @@ const formSchema = z.object({
 });
 
 interface SearchCoordinatesProps {
+    onSearchAction: (address: string) => void;
+    onResetAction: () => void;
     value?: string;
 }
 
-export default function SearchCoordinates({ value }: SearchCoordinatesProps) {
+export default function SearchCoordinates({ onSearchAction, onResetAction, value }: SearchCoordinatesProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -49,7 +51,7 @@ export default function SearchCoordinates({ value }: SearchCoordinatesProps) {
     }, [value, form]);
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
+        onSearchAction(values.coordinates);
     }
 
     return (
@@ -69,10 +71,19 @@ export default function SearchCoordinates({ value }: SearchCoordinatesProps) {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">
-                    <Search />
-                    Suchen
-                </Button>
+                <div className="flex gap-2">
+                    <Button type="submit">
+                        <Search/>
+                        Suchen
+                    </Button>
+                    <Button type="button" variant="destructive" onClick={() => {
+                        if (onResetAction) onResetAction()
+                        form.reset()
+                    }}>
+                        <Trash2 />
+                        Zurücksetzen
+                    </Button>
+                </div>
             </form>
         </Form>
     );

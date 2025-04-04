@@ -154,6 +154,11 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
+                    <SidebarGroupContent>
+                        <AppSidebarSearch chats={chats}/>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
                     <SidebarGroupLabel>Navigation</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
@@ -175,7 +180,7 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                     <SidebarGroupContent className="flex flex-col gap-2">
 
                         <SidebarMenu>
-                            <SidebarMenuItem className="flex items-center gap-2">
+                            <SidebarMenuItem>
                                 <Dialog open={newChatOpen} onOpenChange={setNewChatOpen}>
                                     <DialogTrigger asChild>
                                         <SidebarMenuButton
@@ -219,7 +224,6 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                                         </Form>
                                     </DialogContent>
                                 </Dialog>
-                                <AppSidebarSearch chats={chats}/>
                             </SidebarMenuItem>
                         </SidebarMenu>
 
