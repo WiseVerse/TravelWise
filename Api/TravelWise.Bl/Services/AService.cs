@@ -1,9 +1,7 @@
-﻿
-
-using StockWise.Bl.Interfaces;
+﻿using TravelWise.Bl.Interfaces;
 using TravelWise.Domain.Interfaces;
 
-namespace StockWise.Bl.Services;
+namespace TravelWise.Bl.Services;
 
 public abstract class AService<TEntity> : IService<TEntity> where TEntity : class
 {

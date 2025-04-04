@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import {Search, Trash2} from "lucide-react";
 import {useEffect} from "react";
 
 const formSchema = z.object({
@@ -17,11 +17,12 @@ const formSchema = z.object({
 
 // Hier definieren wir die Props, die auch einen onSearch Callback beinhalten
 interface SearchAddressProps {
-    onSearch: (address: string) => void;
+    onSearchAction: (address: string) => void;
+    onResetAction: () => void;
     value?: string;
 }
 
-export default function SearchAddress({ onSearch, value }: SearchAddressProps) {
+export default function SearchAddress({ onSearchAction, onResetAction, value }: SearchAddressProps) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -37,7 +38,7 @@ export default function SearchAddress({ onSearch, value }: SearchAddressProps) {
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Statt nur console.log, rufen wir den Callback auf
-        onSearch(values.search);
+        onSearchAction(values.search);
         console.log("Form submitted", values)
     }
 
@@ -60,10 +61,19 @@ export default function SearchAddress({ onSearch, value }: SearchAddressProps) {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">
-                    <Search />
-                    Suchen
-                </Button>
+                <div className="flex gap-2">
+                    <Button type="submit">
+                        <Search/>
+                        Suchen
+                    </Button>
+                    <Button type="button" variant="destructive" onClick={() => {
+                        if (onResetAction) onResetAction()
+                        form.reset()
+                    }}>
+                        <Trash2 />
+                        Zurücksetzen
+                    </Button>
+                </div>
             </form>
         </Form>
     )

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using StockWise.Model.Entities;
 using TravelWise.Model.Entities;
 namespace TravelWise.Model.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -24,16 +23,16 @@ public class TravelWiseContext : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Trips)
-            .WithOne(t => t.User)
-            .HasForeignKey(t => t.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Trip>()
-            .HasMany(t => t.TripLocations)
-            .WithOne(tl => tl.Trip)
-            .HasForeignKey(tl => tl.TripId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // modelBuilder.Entity<User>()
+        //     .HasMany(u => u.Trips)
+        //     .WithOne(t => t.User)
+        //     .HasForeignKey(t => t.UserId)
+        //     .OnDelete(DeleteBehavior.Cascade);
+        
+        // modelBuilder.Entity<Trip>()
+        //     .HasMany(t => t.TripLocations)
+        //     .WithOne(tl => tl.Trip)
+        //     .HasForeignKey(tl => tl.TripId)
+        //     .OnDelete(DeleteBehavior.Cascade);
     }
 }
