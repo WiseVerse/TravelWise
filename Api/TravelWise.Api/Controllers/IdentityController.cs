@@ -18,7 +18,6 @@ public class IdentityController(
 {
     [HttpPost]
     [Route("Register")]
-    
     public async Task<IActionResult> Post([FromBody] UserRegisterDto registerRequest)
     {
         # region init user
@@ -57,10 +56,10 @@ public class IdentityController(
     {
         var user = await userManager.FindByEmailAsync(loginRequest.Email);
 
-        if (user == null) return BadRequest("Invalid login attempt");
+        if (user == null) return BadRequest(new { message = "Invalid login attempt" });
         var result = await signInManager.PasswordSignInAsync(user.UserName!, loginRequest.Password, false, true);
 
-        if (!result.Succeeded) return BadRequest("Invalid login attempt");
+        if (!result.Succeeded) return BadRequest(new { message = "Invalid login attempt" });
         var token = tokenManagerService.GenerateJwtToken(user);
 
         return Ok(new { token });
@@ -71,7 +70,7 @@ public class IdentityController(
     [Authorize]
     public IActionResult Get()
     {
-        return Ok("Hello from IdentityController");
+        return Ok(new { message = "Hello from IdentityController" });
     }
 
     [HttpGet]
