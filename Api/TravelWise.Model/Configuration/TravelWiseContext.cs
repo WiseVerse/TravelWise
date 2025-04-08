@@ -9,9 +9,8 @@ public class TravelWiseContext : IdentityDbContext<User>
     //ka
     public TravelWiseContext() {}
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Trip> Trips { get; set; }
-    public DbSet<TripLocation> TripLocations { get; set; }
+    // public DbSet<Trip> Trips { get; set; }
+    // public DbSet<TripLocation> TripLocations { get; set; }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -23,6 +22,7 @@ public class TravelWiseContext : IdentityDbContext<User>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         // modelBuilder.Entity<User>()
         //     .HasMany(u => u.Trips)
         //     .WithOne(t => t.User)
