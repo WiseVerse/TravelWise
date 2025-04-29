@@ -17,7 +17,6 @@ export interface MapComponentRef {
     resetToUserLocation: () => void;
 }
 
-// Neuer Prop markerAllowed, der standardmäßig false ist.
 interface MapComponentProps {
     onMarkerChange?: (coords: { lat: number; lng: number } | null) => void;
     directions?: google.maps.DirectionsResult | null;
@@ -27,15 +26,21 @@ interface MapComponentProps {
 const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref) => {
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: "AIzaSyCfMiJi1gvYZhSbmQqw2pK6vS2o9zERkvw",
+        libraries: ['places'],
     });
 
     const [center, setCenter] = useState(initialCenter);
     const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [showInfoWindow, setShowInfoWindow] = useState(false);
-    const mapRef = useRef<google.maps.Map | null>(null);
 
-    // Default für markerAllowed auf false setzen
+    // Zustände für Place-Details
+    const [placeDetails, setPlaceDetails] = useState<google.maps.places.PlaceResult | null>(null);
+    const [placeInfoPosition, setPlaceInfoPosition] = useState<{ lat: number; lng: number } | null>(null);
+
+    const mapRef = useRef<google.maps.Map | null>(null);
+    const placesServiceRef = useRef<google.maps.places.PlacesService | null>(null);
+
     const markerAllowed = props.markerAllowed ?? false;
 
     useEffect(() => {
@@ -60,7 +65,6 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                             setUserLocation({ lat: data.latitude, lng: data.longitude });
                             setCenter({ lat: data.latitude, lng: data.longitude });
                         } else {
-                            // noinspection ExceptionCaughtLocallyJS
                             throw new Error("Keine Standortdaten erhalten.");
                         }
                     } catch (err) {
@@ -76,13 +80,12 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
 
     const onLoad = (map: google.maps.Map) => {
         mapRef.current = map;
+        placesServiceRef.current = new google.maps.places.PlacesService(map);
     };
 
     const updateMarker = (position: { lat: number; lng: number } | null) => {
         setMarkerPosition(position);
-        if (props.onMarkerChange) {
-            props.onMarkerChange(position);
-        }
+        props.onMarkerChange?.(position);
     };
 
     useImperativeHandle(ref, () => ({
@@ -93,14 +96,12 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
             }
             const geocoder = new window.google.maps.Geocoder();
             geocoder.geocode({ address }, (results, status) => {
-                if (status === 'OK' && results && results.length > 0) {
-                    const location = results[0].geometry.location;
-                    const newCenter = { lat: location.lat(), lng: location.lng() };
+                if (status === 'OK' && results?.length) {
+                    const loc = results[0].geometry.location;
+                    const newCenter = { lat: loc.lat(), lng: loc.lng() };
                     setCenter(newCenter);
                     updateMarker(newCenter);
-                    if (mapRef.current) {
-                        mapRef.current.panTo(newCenter);
-                    }
+                    mapRef.current?.panTo(newCenter);
                 } else {
                     toast.error(`Kein Ort namens ${address} gefunden`);
                 }
@@ -113,25 +114,40 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
         resetToUserLocation() {
             if (userLocation) {
                 setCenter(userLocation);
-                if (mapRef.current) {
-                    mapRef.current.panTo(userLocation);
-                }
-                console.log("Karte zurückgesetzt auf gespeicherte Position:", userLocation);
+                mapRef.current?.panTo(userLocation);
             } else {
                 toast.error("Keine gespeicherte Benutzerposition gefunden.");
             }
         },
     }));
 
-    // Marker setzen nur, wenn markerAllowed true ist.
-    const handleMapClick = (e: google.maps.MapMouseEvent) => {
-        if (!markerAllowed) return;
-        if (e.latLng) {
-            const clickedPosition = {
-                lat: e.latLng.lat(),
-                lng: e.latLng.lng(),
+    interface MapMouseEventWithPlaceId extends google.maps.MapMouseEvent {
+        placeId?: string;
+    }
+
+    const handleMapClick = (e: MapMouseEventWithPlaceId) => {
+        // Klick auf POI: Place-Details abrufen
+        if (e.placeId && placesServiceRef.current && e.latLng) {
+            e.stop();
+            const request: google.maps.places.PlaceDetailsRequest = {
+                placeId: e.placeId,
+                fields: ['name', 'formatted_address', 'rating', 'opening_hours'],
             };
-            updateMarker(clickedPosition);
+            placesServiceRef.current.getDetails(request, (place, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && place) {
+                    setPlaceDetails(place);
+                    setPlaceInfoPosition({ lat: e.latLng!.lat(), lng: e.latLng!.lng() });
+                } else {
+                    toast.error('Details zum Ort konnten nicht geladen werden.');
+                }
+            });
+            return;
+        }
+
+        // Marker setzen nur, wenn erlaubt
+        if (markerAllowed && e.latLng) {
+            const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+            updateMarker(pos);
         }
     };
 
@@ -146,6 +162,7 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                 mapTypeControl: false,
                 streetViewControl: false,
                 cameraControl: false,
+                clickableIcons: true,
             }}
         >
             {props.directions && <DirectionsRenderer directions={props.directions} />}
@@ -155,10 +172,10 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                     icon={{
                         path: google.maps.SymbolPath.CIRCLE,
                         scale: 8,
-                        fillColor: "#4285F4",
+                        fillColor: '#4285F4',
                         fillOpacity: 1,
                         strokeWeight: 2,
-                        strokeColor: "white",
+                        strokeColor: 'white',
                     }}
                 />
             )}
@@ -170,8 +187,7 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                         onClick={() => setShowInfoWindow(true)}
                         onDragEnd={(e) => {
                             if (e.latLng) {
-                                const newPosition = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-                                updateMarker(newPosition);
+                                updateMarker({ lat: e.latLng.lat(), lng: e.latLng.lng() });
                             }
                         }}
                     />
@@ -203,12 +219,32 @@ const MapComponent = forwardRef<MapComponentRef, MapComponentProps>((props, ref)
                     )}
                 </>
             )}
+
+            {/* InfoWindow für Place-Details */}
+            {placeDetails && placeInfoPosition && (
+                <InfoWindow
+                    position={placeInfoPosition}
+                    onCloseClick={() => setPlaceDetails(null)}
+                >
+                    <div>
+                        <h3>{placeDetails.name}</h3>
+                        <p>{placeDetails.formatted_address}</p>
+                        {placeDetails.rating && <p>Bewertung: {placeDetails.rating} Sterne</p>}
+                        {placeDetails.opening_hours?.weekday_text && (
+                            <ul>
+                                {placeDetails.opening_hours.weekday_text.map((line, i) => (
+                                    <li key={i}>{line}</li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </InfoWindow>
+            )}
         </GoogleMap>
     ) : (
         <p>Loading...</p>
     );
 });
 
-MapComponent.displayName = "MapComponent";
-
+MapComponent.displayName = 'MapComponent';
 export default React.memo(MapComponent);
