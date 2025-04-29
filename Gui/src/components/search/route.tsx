@@ -1,8 +1,8 @@
 "use client"
 
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+const allowedModes = ["DRIVING", "WALKING", "BICYCLING", "TRANSIT"] as const;
+
 const formSchema = z.object({
     start: z.string()
         .min(1, "Start Adresse muss vorhanden sein")
@@ -23,9 +25,11 @@ const formSchema = z.object({
     end: z.string()
         .min(1, "Ziel Adresse muss vorhanden sein")
         .trim(),
-    mode: z.enum(["DRIVING", "WALKING", "BICYCLING", "TRANSIT"] as const, {
-        errorMap: () => ({ message: "Bitte wähle einen Modus aus" }),
-    }),
+    mode: z.string()
+        .nonempty("Bitte wähle einen Modus aus")
+        .refine(value => allowedModes.includes(value as typeof allowedModes[number]), {
+            message: "Ungültiger Modus",
+        }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -43,17 +47,19 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
             start: "",
             stops: "",
             end: "",
-            mode: "DRIVING",
+            mode: "",
         },
     });
 
     function onSubmit(values: FormValues) {
         if (onRouteSubmit) {
+            // Cast, damit TypeScript weiß, dass values.mode ein gültiger Schlüssel ist.
+            const travelMode = window.google.maps.TravelMode[values.mode as keyof typeof window.google.maps.TravelMode];
             onRouteSubmit({
                 start: values.start,
                 stops: values.stops,
                 end: values.end,
-                mode: window.google.maps.TravelMode[values.mode],
+                mode: travelMode,
             });
         }
     }
@@ -118,7 +124,7 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                             <FormControl>
                                 <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
+                                    value={field.value}
                                 >
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Wähle einen Modus" />
@@ -142,8 +148,8 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                         Berechnen
                     </Button>
                     <Button type="button" variant="destructive" onClick={() => {
-                        if (onRouteClear) onRouteClear()
-                        form.reset()
+                        if (onRouteClear) onRouteClear();
+                        form.reset();
                     }}>
                         <Trash2 />
                         Route löschen
@@ -151,5 +157,5 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                 </div>
             </form>
         </Form>
-    )
+    );
 }

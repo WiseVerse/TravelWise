@@ -40,12 +40,30 @@ export default function Page() {
                         console.log("Route berechnet:", result);
                         setDirections(result);
 
-                        // Berechne Entfernungs- und Zeitinformationen aus der ersten Route
-                        const leg = result.routes[0].legs[0];
-                        setDistance(leg.distance!.text);
-                        setDuration(leg.duration!.text);
+                        // Gesamte Route über alle Legs berechnen
+                        const legs = result.routes[0].legs;
+                        const totalDistanceInMeters = legs.reduce(
+                            (total, leg) => total + (leg.distance?.value || 0),
+                            0
+                        );
+                        const totalDurationInSeconds = legs.reduce(
+                            (total, leg) => total + (leg.duration?.value || 0),
+                            0
+                        );
+
+                        // Entfernung in Kilometer formatiert
+                        const totalDistanceKm = (totalDistanceInMeters / 1000).toFixed(2) + " km";
+
+                        // Dauer in Stunden und Minuten umrechnen
+                        const hours = Math.floor(totalDurationInSeconds / 3600);
+                        const minutes = Math.floor((totalDurationInSeconds % 3600) / 60);
+                        const totalDurationFormatted =
+                            hours > 0 ? `${hours} Std ${minutes} Min` : `${minutes} Min`;
+
+                        setDistance(totalDistanceKm);
+                        setDuration(totalDurationFormatted);
                     } else {
-                        toast.error("Route konnte nicht berechnet werden. Versuchen Sie das Zielland nach der Adresse hinzuzufügen");
+                        toast.error("Route konnte nicht berechnet werden. Versuchen Sie, das Zielland nach der Adresse hinzuzufügen");
                     }
                 }
             );
