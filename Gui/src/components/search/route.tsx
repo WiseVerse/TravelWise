@@ -15,27 +15,41 @@ const formSchema = z.object({
     end: z.string()
         .min(1, "Ziel Adresse muss vorhanden sein")
         .trim(),
+    mode: z.enum(["DRIVING", "WALKING", "BICYCLING", "TRANSIT"] as const, {
+        errorMap: () => ({ message: "Bitte wähle einen Modus aus" }),
+    }),
+/*    stop: z.string()
+        .min(1, "Zwischenstopp Adresse mus vorhanden sein")
+        .trim(),*/
 })
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface SearchRouteProps {
     startValue?: string;
-    onRouteSubmit?: (data: { start: string; end: string }) => void;
+    onRouteSubmit?: (data: { start: string; end: string; mode: google.maps.TravelMode}) => void;
     onRouteClear?: () => void;
 }
 
 export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRouteProps) {
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             start: "",
             end: "",
+            mode: "DRIVING",
+            //stop: "",
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    function onSubmit(values: FormValues) {
         if (onRouteSubmit) {
-            onRouteSubmit(values);
+            // Google Maps expects TravelMode enum
+            onRouteSubmit({
+                start: values.start,
+                end: values.end,
+                mode: window.google.maps.TravelMode[values.mode],
+            });
         }
     }
 
@@ -71,6 +85,25 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                                 Ziel Address
                             </FormDescription>
                             <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="mode"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Modus</FormLabel>
+                            <FormControl>
+                                <select {...field} className="w-full border rounded p-2">
+                                    <option value="DRIVING">Auto</option>
+                                    <option value="WALKING">Zu Fuß</option>
+                                    <option value="BICYCLING">Fahrrad</option>
+                                    <option value="TRANSIT">ÖPNV</option>
+                                </select>
+                            </FormControl>
+                            <FormDescription>Wähle einen Fortbewegungsmodus</FormDescription>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />

@@ -13,6 +13,8 @@ import {MapPin} from "lucide-react";
 export default function Page() {
     const mapRef = useRef<MapComponentRef>(null);
     const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+    const [distance, setDistance] = useState<string>("");
+    const [duration, setDuration] = useState<string>("");
 
     const handleRouteSubmit = (data: { start: string; end: string }) => {
         if (window.google) {
@@ -27,6 +29,10 @@ export default function Page() {
                     if (status === "OK" && result) {
                         console.log("Route berechnet:", result);
                         setDirections(result);
+
+                        const leg = result.routes[0].legs[0];
+                        setDistance(leg.distance!.text);
+                        setDuration(leg.duration!.text);
                     } else {
                         toast.error("Route konnte nicht berechnet werden. Versuchen Sie das Zielland nach der Adresse hinzuzufügen");
                     }
@@ -37,6 +43,8 @@ export default function Page() {
 
     const handleRouteClear = () => {
         setDirections(null);
+        setDistance("");
+        setDuration("");
     };
 
     return (
@@ -51,6 +59,13 @@ export default function Page() {
                         </CardHeader>
                         <CardContent>
                             <SearchRoute onRouteSubmit={handleRouteSubmit} onRouteClear={handleRouteClear}/>
+
+                            {distance && duration && (
+                                <div className="mt-4 space-y-1 p-2 bg-gray-50 rounded">
+                                    <p className="font-medium">Entfernung: <span className="font-normal">{distance}</span></p>
+                                    <p className="font-medium">Fahrzeit: <span className="font-normal">{duration}</span></p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                     <Button
