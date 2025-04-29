@@ -43,7 +43,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface SearchRouteProps {
-    startValue?: string;
     onRouteSubmit?: (data: { start: string; stops?: string; end: string; mode: google.maps.TravelMode }) => void;
     onRouteClear?: () => void;
 }
