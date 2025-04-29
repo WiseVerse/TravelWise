@@ -1,33 +1,38 @@
 "use client"
 
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod"
-import {useForm} from "react-hook-form"
-import {Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage} from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {Route, Trash2} from "lucide-react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { Form, FormControl, FormDescription, FormField, FormLabel, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Route, Trash2 } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
     start: z.string()
         .min(1, "Start Adresse muss vorhanden sein")
         .trim(),
+    stops: z.string().optional(),
     end: z.string()
         .min(1, "Ziel Adresse muss vorhanden sein")
         .trim(),
     mode: z.enum(["DRIVING", "WALKING", "BICYCLING", "TRANSIT"] as const, {
         errorMap: () => ({ message: "Bitte wähle einen Modus aus" }),
     }),
-/*    stop: z.string()
-        .min(1, "Zwischenstopp Adresse mus vorhanden sein")
-        .trim(),*/
-})
+});
 
 type FormValues = z.infer<typeof formSchema>;
 
 interface SearchRouteProps {
     startValue?: string;
-    onRouteSubmit?: (data: { start: string; end: string; mode: google.maps.TravelMode}) => void;
+    onRouteSubmit?: (data: { start: string; stops?: string; end: string; mode: google.maps.TravelMode }) => void;
     onRouteClear?: () => void;
 }
 
@@ -36,17 +41,17 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
         resolver: zodResolver(formSchema),
         defaultValues: {
             start: "",
+            stops: "",
             end: "",
             mode: "DRIVING",
-            //stop: "",
         },
     });
 
     function onSubmit(values: FormValues) {
         if (onRouteSubmit) {
-            // Google Maps expects TravelMode enum
             onRouteSubmit({
                 start: values.start,
+                stops: values.stops,
                 end: values.end,
                 mode: window.google.maps.TravelMode[values.mode],
             });
@@ -59,7 +64,7 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                 <FormField
                     control={form.control}
                     name="start"
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Start</FormLabel>
                             <FormControl>
@@ -74,8 +79,24 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                 />
                 <FormField
                     control={form.control}
+                    name="stops"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Zwischenstopps</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Adresse 1, Adresse 2, …" {...field} autoComplete="off"/>
+                            </FormControl>
+                            <FormDescription>
+                                Optional: Mehrere Stopps durch Kommas trennen
+                            </FormDescription>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="end"
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>Ziel</FormLabel>
                             <FormControl>
@@ -95,12 +116,20 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
                         <FormItem>
                             <FormLabel>Modus</FormLabel>
                             <FormControl>
-                                <select {...field} className="w-full border rounded p-2">
-                                    <option value="DRIVING">Auto</option>
-                                    <option value="WALKING">Zu Fuß</option>
-                                    <option value="BICYCLING">Fahrrad</option>
-                                    <option value="TRANSIT">ÖPNV</option>
-                                </select>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Wähle einen Modus" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="DRIVING">Auto</SelectItem>
+                                        <SelectItem value="WALKING">Zu Fuß</SelectItem>
+                                        <SelectItem value="BICYCLING">Fahrrad</SelectItem>
+                                        <SelectItem value="TRANSIT">ÖPNV</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </FormControl>
                             <FormDescription>Wähle einen Fortbewegungsmodus</FormDescription>
                             <FormMessage />
