@@ -65,14 +65,15 @@ export default function SiteSearch({open, setOpen, chats}: Props) {
         setNewChatOpen(false)
         window.location.reload()
     }
-
+    
     return (
         <>
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <CommandInput placeholder="Suche nach Chats..."/>
                 <CommandList>
                     <CommandEmpty>Nichts dazu gefunden</CommandEmpty>
-                    <CommandGroup heading="Navigation">
+
+                    <CommandGroup heading="Schnellzugriff">
                         <CommandItem onSelect={() => {
                             router.push("/app");
                             setOpen(false);
@@ -80,6 +81,17 @@ export default function SiteSearch({open, setOpen, chats}: Props) {
                             <Home/>
                             Home
                         </CommandItem>
+                        <CommandItem onSelect={() => {
+                            router.push("/app/settings");
+                            setOpen(false);
+                        }}>
+                            <Settings/>
+                            Einstellungen
+                        </CommandItem>
+                    </CommandGroup>
+
+                    {/* Übrige Navigationsoptionen */}
+                    <CommandGroup heading="Navigation">
                         <CommandItem onSelect={() => {
                             router.push("/app/search");
                             setOpen(false);
@@ -94,14 +106,8 @@ export default function SiteSearch({open, setOpen, chats}: Props) {
                             <Route/>
                             Route
                         </CommandItem>
-                        <CommandItem onSelect={() => {
-                            router.push("/app/settings");
-                            setOpen(false);
-                        }}>
-                            <Settings/>
-                            Einstellungen
-                        </CommandItem>
                     </CommandGroup>
+
                     <CommandGroup heading="Chats">
                         <CommandItem onSelect={() => {
                             setOpen(false);
@@ -136,8 +142,8 @@ export default function SiteSearch({open, setOpen, chats}: Props) {
                                             createdDate.getFullYear() === now.getFullYear();
 
                                         return isToday
-                                            ? createdDate.toTimeString().split(" ")[0] // Uhrzeit, z.B. "14:30:45"
-                                            : createdDate.toISOString().split("T")[0];  // Datum, z.B. "2025-04-04"
+                                            ? createdDate.toTimeString().split(" ")[0]
+                                            : createdDate.toISOString().split("T")[0];
                                     })()
                                 }
                             </span>
@@ -147,6 +153,7 @@ export default function SiteSearch({open, setOpen, chats}: Props) {
                 </CommandList>
             </CommandDialog>
 
+            {/* Der Rest des Codes bleibt unverändert */}
             <Dialog open={newChatOpen} onOpenChange={setNewChatOpen}>
                 <DialogContent>
                     <DialogHeader>

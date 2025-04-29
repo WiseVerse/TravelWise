@@ -3,7 +3,6 @@
 import {
     Sidebar,
     SidebarContent,
-    SidebarFooter,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuItem,
@@ -52,11 +51,6 @@ import {
 import {usePathname, useRouter} from "next/navigation";
 
 const NavItems = [
-    {
-        icon: <Home/>,
-        name: "Home",
-        url: "/app"
-    },
     {
         icon: <SearchIcon/>,
         name: "Suche",
@@ -156,6 +150,31 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <AppSidebarSearch chats={chats}/>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Schnellzugriff</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/app">
+                                        <Home/>
+                                        Home
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/app/settings">
+                                        <Settings/>
+                                        Einstellungen
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
                 <SidebarGroup>
@@ -317,18 +336,6 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href="/app/settings">
-                                <Settings/>
-                                Einstellungen
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarFooter>
         </Sidebar>
     )
 }
