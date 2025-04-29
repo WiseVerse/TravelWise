@@ -100,7 +100,7 @@ export default function SearchPage() {
 
                 </div>
 
-                <MapComponent ref={mapRef} onMarkerChange={setMarkerCoordinates} />
+                <MapComponent ref={mapRef} onMarkerChange={setMarkerCoordinates} markerAllowed/>
             </div>
         </>
     );
