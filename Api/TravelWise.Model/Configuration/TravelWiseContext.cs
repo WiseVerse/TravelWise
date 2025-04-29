@@ -34,5 +34,24 @@ public class TravelWiseContext : IdentityDbContext<User>
         //     .WithOne(tl => tl.Trip)
         //     .HasForeignKey(tl => tl.TripId)
         //     .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<Feedback>()
+            .HasKey(f => f.Id);
+            
+            
+        modelBuilder.Entity<Feedback>()
+            .HasOne(f => f.User)
+            .WithMany(u => u.Feedbacks)
+            .HasForeignKey(f => f.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+            
+        modelBuilder.Entity<Feedback>()
+            .HasOne(f => f.Trip)
+            .WithMany(t => t.Feedbacks)
+            .HasForeignKey(f => f.TripId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
+    
+    
+

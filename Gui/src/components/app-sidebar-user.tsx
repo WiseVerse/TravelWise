@@ -12,11 +12,30 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {ChevronsUpDown, LogOut} from "lucide-react";
 import {useIsMobile} from "@/hooks/use-mobile";
 import Link from "next/link";
+import {useEffect, useState} from "react";
+import {fetchUser} from "@/lib/auth";
+import {User} from "@/lib/types";
+import {useRouter} from "next/navigation";
 
 const avatarLink = "https://a.espncdn.com/i/headshots/nba/players/full/1966.png"
 
+
 export default function AppSidebarUser() {
+    const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
     const isMobile = useIsMobile()
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) return router.push("/auth/login");
+
+        const fetchData = async () => {
+            const user = await fetchUser(token);
+            setUser(user);
+        }
+
+        fetchData().then()
+    })
 
     return (
         <SidebarMenu>
@@ -33,8 +52,8 @@ export default function AppSidebarUser() {
                             </Avatar>
 
                             <div className="grid flex-1 text-left text-sm leading-tight">
-                                <span className="truncate font-semibold">Account</span>
-                                <span className="truncate text-xs">account@mail.com</span>
+                                <span className="truncate font-semibold">{user?.userName}</span>
+                                <span className="truncate text-xs">{user?.email}</span>
                             </div>
 
                             <ChevronsUpDown className="ml-auto size-4"/>
@@ -61,7 +80,9 @@ export default function AppSidebarUser() {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator/>
                         <DropdownMenuItem asChild>
-                            <Link href="/auth/login">
+                            <Link href="/auth/login" onClick={() => {
+                                localStorage.removeItem("token")
+                            }}>
                                 <LogOut/>
                                 Log out
                             </Link>

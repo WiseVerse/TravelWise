@@ -11,3 +11,25 @@ export type message = {
     fromUser: boolean;
     chatId: string;
 }
+
+export type AuthResponse = {
+    token: string
+}
+
+export type ErrorRegisterResponse = {
+    errors: [
+        {
+            code: string,
+            description: string
+        }
+    ]
+}
+
+export type ErrorLoginResponse = {
+    message: string
+}
+
+export type User = {
+    email: string;
+    userName: string;
+}
