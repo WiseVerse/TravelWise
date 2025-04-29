@@ -134,6 +134,13 @@ export default function SiteSearch({ open, setOpen, chats }: Props) {
                             <Settings />
                             Einstellungen
                         </CommandItem>
+                        <CommandItem onSelect={() => {
+                            if (setOpen) {
+                                setOpen(false);
+                            } setFeedbackOpen(true); }}>
+                            <Sparkles />
+                            Feedback geben
+                        </CommandItem>
                     </CommandGroup>
 
                     <CommandGroup heading="Navigation">
@@ -193,17 +200,6 @@ export default function SiteSearch({ open, setOpen, chats }: Props) {
                 </span>
                             </CommandItem>
                         ))}
-                    </CommandGroup>
-
-                    {/* Neuer CommandGroup-Eintrag für Feedback */}
-                    <CommandGroup heading="Feedback">
-                        <CommandItem onSelect={() => {
-                            if (setOpen) {
-                                setOpen(false);
-                            } setFeedbackOpen(true); }}>
-                            <Sparkles />
-                            Feedback geben
-                        </CommandItem>
                     </CommandGroup>
                 </CommandList>
             </CommandDialog>
