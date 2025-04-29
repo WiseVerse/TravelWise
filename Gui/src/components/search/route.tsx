@@ -47,7 +47,7 @@ export default function SearchRoute({ onRouteSubmit, onRouteClear }: SearchRoute
             start: "",
             stops: "",
             end: "",
-            mode: "",
+            mode: "DRIVING",
         },
     });
 
