@@ -16,4 +16,6 @@ public class Trip
     // Navigation Property
     public User User { get; set; } = null!;
     public List<TripLocation> TripLocations { get; set; } = new();
+    public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
 }
