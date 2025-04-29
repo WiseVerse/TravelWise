@@ -1,18 +1,20 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import SearchRoute from "@/components/search/route";
-import React, { useRef, useState } from "react";
+import React, {useRef, useState} from "react";
 import SiteHeader from "@/components/site-header";
-import MapComponent, { MapComponentRef } from "@/components/map/map";
-import { toast } from "sonner";
+import MapComponent, {MapComponentRef} from "@/components/map/map";
+import {toast} from "sonner";
 import ChatSheet from "@/components/chat/chat-sheet";
-import { Button } from "@/components/ui/button";
-import { MapPin } from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {MapPin} from "lucide-react";
 
 export default function Page() {
     const mapRef = useRef<MapComponentRef>(null);
     const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
+    const [distance, setDistance] = useState<string>("");
+    const [duration, setDuration] = useState<string>("");
 
     const handleRouteSubmit = (data: { start: string; stops?: string; end: string }) => {
         if (window.google) {
@@ -38,6 +40,10 @@ export default function Page() {
                     if (status === "OK" && result) {
                         console.log("Route berechnet:", result);
                         setDirections(result);
+
+                        const leg = result.routes[0].legs[0];
+                        setDistance(leg.distance!.text);
+                        setDuration(leg.duration!.text);
                     } else {
                         toast.error("Route konnte nicht berechnet werden. Versuchen Sie das Zielland nach der Adresse hinzuzufügen");
                     }
@@ -48,6 +54,8 @@ export default function Page() {
 
     const handleRouteClear = () => {
         setDirections(null);
+        setDistance("");
+        setDuration("");
     };
 
     return (
@@ -62,6 +70,14 @@ export default function Page() {
                         </CardHeader>
                         <CardContent>
                             <SearchRoute onRouteSubmit={handleRouteSubmit} onRouteClear={handleRouteClear} />
+                            <SearchRoute onRouteSubmit={handleRouteSubmit} onRouteClear={handleRouteClear}/>
+
+                            {distance && duration && (
+                                <div className="mt-4 space-y-1 p-2 bg-gray-50 rounded">
+                                    <p className="font-medium">Entfernung: <span className="font-normal">{distance}</span></p>
+                                    <p className="font-medium">Fahrzeit: <span className="font-normal">{duration}</span></p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                     <Button variant="outline" onClick={() => mapRef.current?.resetToUserLocation()}>
@@ -71,7 +87,7 @@ export default function Page() {
 
                     <ChatSheet />
                 </div>
-                <MapComponent ref={mapRef} directions={directions} />
+                <MapComponent ref={mapRef} directions={directions}/>
             </div>
         </>
     );
