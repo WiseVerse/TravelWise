@@ -12,7 +12,8 @@ import {
     SidebarGroupLabel,
     SidebarMenuSub,
     SidebarMenuSubItem,
-    SidebarMenuSubButton
+    SidebarMenuSubButton,
+    SidebarFooter
 } from "@/components/ui/sidebar";
 import React, {useEffect, useState} from "react";
 import {CirclePlus, Home, MessageCircle, PenLine, PlusCircle, Route, SearchIcon, Settings, Trash2} from "lucide-react";
@@ -49,6 +50,7 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {usePathname, useRouter} from "next/navigation";
+import FeedbackDialog from "@/components/app-sidebar-feedback";
 
 const NavItems = [
     {
@@ -336,6 +338,11 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                <SidebarMenu>
+                    <FeedbackDialog />
+                </SidebarMenu>   
+            </SidebarFooter>
         </Sidebar>
     )
 }

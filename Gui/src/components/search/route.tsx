@@ -30,6 +30,14 @@ const formSchema = z.object({
         .refine(value => allowedModes.includes(value as typeof allowedModes[number]), {
             message: "Ungültiger Modus",
         }),
+}).refine(data => {
+    if (data.mode === "TRANSIT") {
+        return !data.stops || data.stops.trim() === "";
+    }
+    return true;
+}, {
+    path: ["stops"],
+    message: "Zwischenstopps dürfen nicht angegeben sein, wenn ÖPNV gewählt ist",
 });
 
 type FormValues = z.infer<typeof formSchema>;

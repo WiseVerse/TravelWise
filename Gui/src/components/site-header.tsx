@@ -62,7 +62,16 @@ export default function SiteHeader({title, variant="default"}: { title: string, 
                 <header
                     className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
                     <div className="flex w-full items-center gap-1 px-4">
-                        <SidebarTrigger className="-ml-1"/>
+                        {isMobile ? (
+                            <>
+                                <Button variant="ghost" size="icon" onClick={() => setOpen(true)}>
+                                    <Menu/>
+                                </Button>
+                                <SiteSearch open={open} setOpen={setOpen} chats={chats}/>
+                            </>
+                        ) : (
+                            <SidebarTrigger className="-ml-1"/>
+                        )}
                         <Separator
                             orientation="vertical"
                             className="mx-2 data-[orientation=vertical]:h-4"
