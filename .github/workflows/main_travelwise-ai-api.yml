@@ -32,27 +32,10 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
-        context: Ai
+        context: /Ai
         push: true
         tags: travelwiseai.azurecr.io/travelwise.ai:${{ github.sha }}
-        file: Ai/Dockerfile
+        file: /Ai/Dockerfile
         build-args: |
           AGENT_ENDPOINT=${{ secrets.AGENT_ENDPOINT }}
           AGENT_ACCESS_KEY=${{ secrets.AGENT_ACCESS_KEY }}
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'travelwise-ai-api'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_af355efd44fe4f63a381e7685ce69b88 }}
-        images: 'travelwiseai.azurecr.io/travelwise.ai:${{ github.sha }}'
