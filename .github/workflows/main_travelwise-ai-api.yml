@@ -5,6 +5,9 @@ name: Build and deploy container app to Azure Web App - travelwise-ai-api
 
 on:
   push:
+    paths:
+      - Ai/**
+      - .github/workflows/main_TravelWise-ai-Api.yml
     branches:
       - main
   workflow_dispatch:
@@ -29,9 +32,13 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
+        context: ./Ai
         push: true
         tags: travelwiseai.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_7c63b32a3b8842bf94a1d79483305a2f }}/travelwiseai:${{ github.sha }}
         file: ./Dockerfile
+        build-args: |
+          AGENT_ENDPOINT=${{ secrets.AGENT_ENDPOINT }}
+          AGENT_ACCESS_KEY=${{ secrets.AGENT_ACCESS_KEY }}
 
   deploy:
     runs-on: ubuntu-latest
