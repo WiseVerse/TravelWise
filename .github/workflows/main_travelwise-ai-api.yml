@@ -35,7 +35,7 @@ jobs:
         context: ./Ai
         push: true
         tags: travelwiseai.azurecr.io/travelwise.ai:${{ github.sha }}
-        file: ./Dockerfile
+        file: ./Ai/Dockerfile
         build-args: |
           AGENT_ENDPOINT=${{ secrets.AGENT_ENDPOINT }}
           AGENT_ACCESS_KEY=${{ secrets.AGENT_ACCESS_KEY }}
