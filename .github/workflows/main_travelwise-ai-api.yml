@@ -7,7 +7,7 @@ on:
   push:
     paths:
       - Ai/**
-      - .github/workflows/main_TravelWise-ai-Api.yml
+      - .github/workflows/main_travelwise-ai-api.yml
     branches:
       - main
   workflow_dispatch:
