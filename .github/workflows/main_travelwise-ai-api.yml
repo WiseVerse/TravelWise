@@ -32,10 +32,10 @@ jobs:
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
-        context: ./Ai
+        context: Ai
         push: true
         tags: travelwiseai.azurecr.io/travelwise.ai:${{ github.sha }}
-        file: ./Ai/Dockerfile
+        file: Ai/Dockerfile
         build-args: |
           AGENT_ENDPOINT=${{ secrets.AGENT_ENDPOINT }}
           AGENT_ACCESS_KEY=${{ secrets.AGENT_ACCESS_KEY }}
