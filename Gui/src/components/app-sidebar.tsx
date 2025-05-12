@@ -3,7 +3,6 @@
 import {
     Sidebar,
     SidebarContent,
-    SidebarFooter,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuItem,
@@ -13,7 +12,8 @@ import {
     SidebarGroupLabel,
     SidebarMenuSub,
     SidebarMenuSubItem,
-    SidebarMenuSubButton
+    SidebarMenuSubButton,
+    SidebarFooter
 } from "@/components/ui/sidebar";
 import React, {useEffect, useState} from "react";
 import {CirclePlus, Home, MessageCircle, PenLine, PlusCircle, Route, SearchIcon, Settings, Trash2} from "lucide-react";
@@ -50,13 +50,9 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {usePathname, useRouter} from "next/navigation";
+import FeedbackDialog from "@/components/app-sidebar-feedback";
 
 const NavItems = [
-    {
-        icon: <Home/>,
-        name: "Home",
-        url: "/app"
-    },
     {
         icon: <SearchIcon/>,
         name: "Suche",
@@ -156,6 +152,31 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <AppSidebarSearch chats={chats}/>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Schnellzugriff</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/app">
+                                        <Home/>
+                                        Home
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                        <SidebarMenu>
+                            <SidebarMenuItem>
+                                <SidebarMenuButton asChild>
+                                    <Link href="/app/settings">
+                                        <Settings/>
+                                        Einstellungen
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
                 <SidebarGroup>
@@ -319,15 +340,8 @@ export default function AppSidebar({...props}: React.ComponentProps<typeof Sideb
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                            <Link href="/app/settings">
-                                <Settings/>
-                                Einstellungen
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                    <FeedbackDialog />
+                </SidebarMenu>   
             </SidebarFooter>
         </Sidebar>
     )
