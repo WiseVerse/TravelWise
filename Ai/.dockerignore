@@ -1,0 +1,2 @@
+.env        # contains secrets
+.gitignore  # should include .env

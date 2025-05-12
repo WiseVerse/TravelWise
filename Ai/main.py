@@ -1,32 +1,40 @@
-# Install OS, JSON, and OpenAI libraries.
-import os
-import json
-from openai import OpenAI
-from dotenv import load_dotenv
+from langgraph.checkpoint.memory import MemorySaver
 
-load_dotenv()
+from langgraph.graph import StateGraph, START, END
 
-# Set your agent endpoint and access key as environment variables in your OS.
-agent_endpoint = os.getenv("agent_endpoint") + "/api/v1/"
-agent_access_key = os.getenv("agent_access_key")
+from Models.State import State
+from Nodes.chatbot import chatbot
 
-if __name__ == "__main__":
-    client = OpenAI(
-        base_url=agent_endpoint,
-        api_key=agent_access_key,
-    )
+memory = MemorySaver()
 
-    response = client.chat.completions.create(
-        model="n/a",
-        messages=[{"role": "user", "content": "Can you provide the name of France's capital in JSON format."}],
-        extra_body={"include_retrieval_info": True}
-    )
+graph_builder = StateGraph(State)
 
-    # Prints response's content and retrieval object.
-    for choice in response.choices:
-        print(choice.message.content)
+# tool_node = BasicToolNode(tools=[tool])
 
-    response_dict = response.to_dict()
+# graph_builder.add_node("tools", tool_node)
+graph_builder.add_node("chatbot", chatbot)
 
-    print("\nFull retrieval object:")
-    print(json.dumps(response_dict["retrieval"], indent=2))
+graph_builder.add_edge(START, "chatbot")
+
+graph = graph_builder.compile()
+
+def stream_graph_updates(user_input: str):
+    for event in graph.stream({"messages": [{"role": "user", "content": user_input}]}):
+        for value in event.values():
+            print(value)
+            print("Assistant:", value["messages"][-1].content)
+
+
+while True:
+    try:
+        user_input = input("User: ")
+        if user_input.lower() in ["quit", "exit", "q"]:
+            print("Goodbye!")
+            break
+        stream_graph_updates(user_input)
+    except:
+        # fallback if input() is not available
+        user_input = "What do you know about LangGraph?"
+        print("User: " + user_input)
+        stream_graph_updates(user_input)
+        break
