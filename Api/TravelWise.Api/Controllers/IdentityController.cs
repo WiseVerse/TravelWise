@@ -28,6 +28,7 @@ public class IdentityController(
             Email = registerRequest.Email
         };
 
+        if (userManager.Users.Any(u => u.Email == registerRequest.Email)) return BadRequest(new { message = "Email already exists" });
         var result = await userManager.CreateAsync(user, registerRequest.Password);
 
         if (result.Succeeded)
