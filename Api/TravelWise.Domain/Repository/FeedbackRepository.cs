@@ -11,23 +11,11 @@ public class FeedbackRepository : ARepository<Feedback>, IFeedbackRepository
     {
     }
 
-    public async Task<Feedback> ReceiveFeedback(FeedbackDto dto)
+    public async Task<Feedback> ReceiveFeedback(Feedback feedback)
     {
-        var feedback = new Feedback
-        {
-            Rating = dto.Rating,
-            Comment = dto.Comment,
-            CreatedAt = DateTime.UtcNow,
-            UserId = dto.UserId,
-            TripId = dto.TripId
-        };
-
         await Table.AddAsync(feedback);
         await Context.SaveChangesAsync();
         
         return feedback;
-
     }
-
-
 }

@@ -8,12 +8,10 @@ namespace TravelWise.Bl.Services;
 public class FeedbackService(IFeedbackRepository repository) : AService<Feedback>(repository), IFeedbackService
 {
 
-    public Task<Feedback?> ReceiveFeedback(FeedbackDto dto)
+    public Task<Feedback> ReceiveFeedback(Feedback feedback)
     {
-        return ((IFeedbackRepository)Repository).ReceiveFeedback(dto);
+        return ((IFeedbackRepository)Repository).ReceiveFeedback(feedback);
     }
-
-
 }
 
 

@@ -22,6 +22,9 @@ var builder = WebApplication.CreateBuilder(args);
 # region default settings
 
 builder.Services.AddEndpointsApiExplorer();
+
+
+
 builder.Services.AddSwaggerGen(
     c =>
     {
@@ -55,7 +58,11 @@ builder.Services.AddSwaggerGen(
         c.AddSecurityRequirement(securityRequirement);
     });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 
 // builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
 
@@ -132,12 +139,15 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 # region repositories
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+//builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 # endregion
 
 # region services
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ITokenManagerService, TokenManagerService>();
 builder.Services.AddTransient<IEmailSender<User>, DummyEmailSender>();
+builder.Services.AddTransient<IFeedbackRepository, FeedbackRepository>();
 # endregion
 
 # region cors

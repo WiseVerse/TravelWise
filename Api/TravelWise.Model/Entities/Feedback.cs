@@ -1,8 +1,14 @@
-﻿namespace TravelWise.Model.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TravelWise.Model.Entities;
 
 public class Feedback
 {
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
+    //public string Id2 { get; set; } = Guid.NewGuid().ToString();
     public int Rating { get; set; } // 1-10
     public string? Comment { get; set; } // Optional
     public DateTime CreatedAt { get; set; }
@@ -11,6 +17,4 @@ public class Feedback
     public string UserId { get; set; }
     public User User { get; set; }
 
-    public Guid TripId { get; set; }
-    public Trip Trip { get; set; }
 }
