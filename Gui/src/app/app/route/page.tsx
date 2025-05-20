@@ -39,9 +39,30 @@ export default function Page() {
                     if (status === "OK" && result) {
                         console.log("Route berechnet:", result);
                         setDirections(result);
-
-                        // Gesamte Route über alle Legs berechnen
                         const legs = result.routes[0].legs;
+
+                        // später für fetch an Nick
+                        const routeAbschnitte = legs.map((leg, index) => ({
+                            abschnitt: index + 1, // Nur Nummerierung
+                            entfernung: leg.distance?.text || "",
+                            dauer: leg.duration?.text || "",
+                            start: {
+                                adresse: leg.start_address,
+                                koordinaten: {
+                                    lat: leg.start_location.lat(),
+                                    lng: leg.start_location.lng()
+                                }
+                            },
+                            ziel: {
+                                adresse: leg.end_address,
+                                koordinaten: {
+                                    lat: leg.end_location.lat(),
+                                    lng: leg.end_location.lng()
+                                }
+                            }
+                        }));
+                        console.log("Fetch Objekt:", routeAbschnitte);
+
                         const totalDistanceInMeters = legs.reduce(
                             (total, leg) => total + (leg.distance?.value || 0),
                             0
